@@ -115,29 +115,43 @@ end
 """
     pass_rate(summary::CheckSummary)::Float64
 
-Calculate the percentage of checks that passed.
+Calculate the percentage of rows that passed all checks.
 
 # Arguments
 - `summary::CheckSummary`: A summary object containing the results of multiple checks.
 
 # Returns
-Percentage of checks passed, rounded to one decimal place (0-100).
+Percentage of rows that passed all checks, rounded to one decimal place (0-100).
 
 # Examples
 ```julia
-rate = pass_rate(summary)  # Returns 95.0 for 95% pass rate
+rate = pass_rate(summary)  # Returns 95.0 if 95% of rows passed all checks
 ```
 """
 function pass_rate(summary::CheckSummary)::Float64
-    n_total = length(summary.check_results)
-    n_passed = length(passed_checks(summary))
-    round(100.0 * n_passed / n_total, digits=1)
+    # Get the total number of rows from any check result
+    # Since all checks run on the same data, total_rows should be the same
+    first_result = first(values(summary.check_results))
+    total_rows = first_result.total_rows
+    
+    if total_rows == 0
+        return 0.0
+    end
+    
+    # A row passes if it's not in the failing_rows of any check
+    all_failing_rows = Set{Int}()
+    for result in values(summary.check_results)
+        union!(all_failing_rows, result.failing_rows)
+    end
+    
+    n_failed = length(all_failing_rows)
+    round(100.0 * (total_rows - n_failed) / total_rows, digits=1)
 end
 
 """
     pass_rate(summary::CheckSummary, check_name::String)::Float64
 
-Calculate the pass rate for a specific check.
+Calculate the pass rate for a specific check based on number of rows that passed.
 
 # Arguments
 - `summary::CheckSummary`: A summary object containing the results of multiple checks.
@@ -148,7 +162,7 @@ Percentage of rows that passed the specified check, rounded to one decimal place
 
 # Examples
 ```julia
-rate = pass_rate(summary, "column_type_check")  # Returns 95.0 for 95% pass rate
+rate = pass_rate(summary, "column_type_check")  # Returns 95.0 if 95% of rows passed this check
 ```
 """
 function pass_rate(summary::CheckSummary, check_name::String)::Float64

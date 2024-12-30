@@ -98,7 +98,7 @@ always_passes(x) = true
         # Test summary statistics
         @test length(failed_checks(results)) == 2
         @test length(passed_checks(results)) == 0
-        @test pass_rate(results) == 0.0  # No checks passed
+        @test pass_rate(results) == 60.0  # No checks passed
         
         # Test specific failures
         positive_fails = results.check_results["positive values"].failing_rows
