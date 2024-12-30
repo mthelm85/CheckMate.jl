@@ -18,6 +18,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="https://github.com/mthelm85/CheckMate.jl",
+    repo="github.com/mthelm85/CheckMate.jl",
     devbranch="main",
 )
