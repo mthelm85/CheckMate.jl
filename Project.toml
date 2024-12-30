@@ -1,7 +1,7 @@
 name = "CheckMate"
 uuid = "94fda9bc-e29e-424a-aa2b-1addfed2164c"
 authors = ["Matt Helm mthelm85@gmail.com"]
-version = "1.0.0-DEV"
+version = "0.1.0"
 
 [deps]
 MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
