@@ -16,6 +16,7 @@ struct CheckResult
     failing_rows::Vector{Int}
     failing_values::Vector{NamedTuple}
     message::String
+    total_rows::Int
 end
 
 struct CheckSummary

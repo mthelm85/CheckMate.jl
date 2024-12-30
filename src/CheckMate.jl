@@ -135,6 +135,35 @@ function pass_rate(summary::CheckSummary)::Float64
 end
 
 """
+    pass_rate(summary::CheckSummary, check_name::String)::Float64
+
+Calculate the pass rate for a specific check.
+
+# Arguments
+- `summary::CheckSummary`: A summary object containing the results of multiple checks.
+- `check_name::String`: The name of the specific check to calculate pass rate for.
+
+# Returns
+Percentage of rows that passed the specified check, rounded to one decimal place (0-100).
+
+# Examples
+```julia
+rate = pass_rate(summary, "column_type_check")  # Returns 95.0 for 95% pass rate
+```
+"""
+function pass_rate(summary::CheckSummary, check_name::String)::Float64
+    haskey(summary.check_results, check_name) || error("Check '$check_name' not found")
+    result = summary.check_results[check_name]
+    
+    if result.total_rows == 0
+        return 0.0
+    end
+    
+    n_failed = length(result.failing_rows)
+    round(100.0 * (result.total_rows - n_failed) / result.total_rows, digits=1)
+end
+
+"""
     execution_time(summary::CheckSummary)::Float64
 
 Retrieve the total execution time of all checks.
@@ -218,23 +247,24 @@ function failing_rows(summary::CheckSummary)::Vector{Int}
 end
 
 function run_check(data, check::Check)::CheckResult
-    # Early return if required columns aren't present
     !has_required_columns(data, check.columns) && return CheckResult(
         false, 
         Int[], 
         NamedTuple[],
-        "Required columns not found: $(check.columns)"
+        "Required columns not found: $(check.columns)",
+        0  # No valid rows if columns missing
     )
     
-    # Get relevant columns and check rows
     columns = get_columns(data, check.columns)
     failing_rows, failing_values = check_rows(columns, check)
+    total_rows = length(first(columns))
     
     CheckResult(
         isempty(failing_rows),
         failing_rows,
         failing_values,
-        isempty(failing_rows) ? "All rows passed" : "$(length(failing_rows)) rows failed"
+        isempty(failing_rows) ? "All rows passed" : "$(length(failing_rows)) rows failed",
+        total_rows
     )
 end
 
