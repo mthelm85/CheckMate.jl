@@ -145,7 +145,7 @@ function pass_rate(summary::CheckSummary)::Float64
     end
     
     n_failed = length(all_failing_rows)
-    round(100.0 * (total_rows - n_failed) / total_rows, digits=1)
+    round(100.0 * (total_rows - n_failed) / total_rows, digits=2)
 end
 
 """
@@ -174,7 +174,7 @@ function pass_rate(summary::CheckSummary, check_name::String)::Float64
     end
     
     n_failed = length(result.failing_rows)
-    round(100.0 * (result.total_rows - n_failed) / result.total_rows, digits=1)
+    round(100.0 * (result.total_rows - n_failed) / result.total_rows, digits=2)
 end
 
 """
