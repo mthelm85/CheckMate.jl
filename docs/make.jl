@@ -9,7 +9,7 @@ makedocs(;
     sitename="CheckMate.jl",
     format=Documenter.HTML(;
         canonical="https://mthelm85.github.io/CheckMate.jl",
-        edit_link="master",
+        edit_link="main",
         assets=String[],
     ),
     pages=[
