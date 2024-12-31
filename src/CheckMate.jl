@@ -10,7 +10,8 @@ include("reporting.jl")
 
 export Check, CheckSet, CheckResult, CheckSummary                                                             # Types
 export @checkset                                                                                              # Macros
-export run_checkset, failed_checks, passed_checks, total_failures, pass_rate, execution_time, failing_rows    # Functions
+export run_checkset, failed_checks, passed_checks, total_failures, pass_rate, execution_time,                 # Functions
+       failing_rows, check_columns
 export print_summary                                                                                          # Reporting
 
 """
@@ -258,6 +259,28 @@ all_failed_indices = failing_rows(summary)  # Returns [1, 2, 5, 8, ...]
 """
 function failing_rows(summary::CheckSummary)::Vector{Int}
     sort(unique(vcat([failing_rows(result) for result in values(summary.check_results)]...)))
+end
+
+"""
+    check_columns(checkset::CheckSet, check_name::String)::Vector{Symbol}
+
+Retrieve the column names for a specific named check.
+
+# Arguments
+- `checkset::CheckSet`: A checkset object.
+- `check_name::String`: The name of the specific check to retrieve column names for.
+
+# Returns
+A vector of column names used in the specified check.
+
+# Examples
+```julia
+columns = check_columns(checkset, "column_type_check")  # Returns [:a, :b]
+```
+"""
+function check_columns(checkset::CheckSet, check_name::String)::Vector{Symbol}
+    in(check_name, map(x -> x.name, checkset.checks)) || error("Check '$check_name' in checkset '$checkset' not found")
+    checkset.checks[findfirst(x -> x.name == check_name, checkset.checks)].columns
 end
 
 function run_check(data, check::Check)::CheckResult

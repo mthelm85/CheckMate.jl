@@ -240,4 +240,16 @@ always_passes(x) = true
         @test length(checks.checks) == 1
         @test checks.checks[1].name == "test"
     end
+
+    @testset "Check Columns" begin
+        data = TestTable([1, 2, 3], [4, 5, 6])
+        
+        checks = @checkset "column check" begin
+            @check "positive values" is_positive(:a)
+            @check "a greater than b" first_greater_than_second(:a, :b)
+        end
+        
+        @test check_columns(checks, "positive values") == [:a]
+        @test check_columns(checks, "a greater than b") == [:a, :b]
+    end
 end
