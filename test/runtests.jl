@@ -252,4 +252,13 @@ always_passes(x) = true
         @test check_columns(checks, "positive values") == [:a]
         @test check_columns(checks, "a greater than b") == [:a, :b]
     end
+
+    @testset "Check Names" begin
+        checks = @checkset "name check" begin
+            @check "positive values" is_positive(:a)
+            @check "a greater than b" first_greater_than_second(:a, :b)
+        end
+        
+        @test check_names(checks) == ["positive values", "a greater than b"]
+    end
 end

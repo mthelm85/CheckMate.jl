@@ -11,7 +11,7 @@ include("reporting.jl")
 export Check, CheckSet, CheckResult, CheckSummary                                                             # Types
 export @checkset                                                                                              # Macros
 export run_checkset, failed_checks, passed_checks, total_failures, pass_rate, execution_time,                 # Functions
-       failing_rows, check_columns
+       failing_rows, check_columns, check_names
 export print_summary                                                                                          # Reporting
 
 """
@@ -281,6 +281,26 @@ columns = check_columns(checkset, "column_type_check")  # Returns [:a, :b]
 function check_columns(checkset::CheckSet, check_name::String)::Vector{Symbol}
     in(check_name, map(x -> x.name, checkset.checks)) || error("Check '$check_name' in checkset '$checkset' not found")
     checkset.checks[findfirst(x -> x.name == check_name, checkset.checks)].columns
+end
+
+"""
+    check_names(checkset::CheckSet)::Vector{String}
+
+Retrieve the names of all checks in a given checkset.
+
+# Arguments
+- `checkset::CheckSet`: A checkset object.
+
+# Returns
+A vector of check names in the specified checkset.
+
+# Examples
+```julia
+names = check_names(checkset)  # Returns ["check1", "check2", ...]
+```
+"""
+function check_names(checkset::CheckSet)::Vector{String}
+    map(check -> check.name, checkset.checks)
 end
 
 function run_check(data, check::Check)::CheckResult
