@@ -27,24 +27,42 @@ Pkg.add("CheckMate")
 using CheckMate
 using DataFrames
 
-# Define your validation functions
-is_positive(x) = x > 0
-valid_currency(x) = x in ("USD", "EUR", "GBP")
-
-# Create a dataset
+# Example dataset
 df = DataFrame(
     amount = [100, -50, 200, 300],
     currency = ["USD", "EUR", "XXX", "GBP"]
 )
 
+# Define your validation functions (must return Bool where true=pass/false=fail)
+is_positive(x) = x > 0
+valid_currency(x) = x in ("USD", "EUR", "GBP")
+notmissing(x) = !ismissing(x)
+
 # Define validation rules
 checks = @checkset "Payment Validation" begin
     @check "Positive Amount" is_positive(:amount)
     @check "Valid Currency" valid_currency(:currency)
+    @check "No Missing Amounts" notmissing(:amount)
 end
 
 # Run the checks
 results = run_checkset(df, checks)
+
+# Output:
+
+================================================================================
+Check Summary: Payment Validation
+================================================================================
+
+✗ Positive Amount: 1 rows failed
+   Row 2: amount=-50
+✗ Valid Currency: 1 rows failed
+   Row 3: currency=XXX
+✓ No Missing Amounts: All rows passed
+
+Summary:
+ 1/3 checks passed (33.3%)
+Checks completed in 0.02 seconds
 ```
 
 ## Details
@@ -59,6 +77,18 @@ checks = @checkset "Data Quality" begin
     @check "Multiple Columns" compare_values(:col1, :col2)
 end
 ```
+
+The pattern for individual `@check` statements is:
+
+```julia
+@check <YOUR_CHECK_NAME> f(args...)::Bool # f must return a Bool (where true=pass, false=fail)
+```
+
+Notes:
+
+- You should used named functions in your `@check` declarations (e.g., `x -> x > 0` will not work).
+- Also, negation in validation functions 
+is not currently supported (e.g., `!ismissing(:col)` won't work, but `ismissing(col)` will work.)
 
 ### Running Checks
 
@@ -86,6 +116,25 @@ rate = pass_rate(results)
 
 # Get failing row indices
 rows = failing_rows(results)
+
+# Create detailed report
+using DataFrames
+
+summary = DataFrame(
+    check_name=check_names(checks),
+    pass_rate=[pass_rate(results, check) for check in check_names(checks)],
+    num_failures=[length(failing_rows(results,check)) for check in check_names(checks)]
+)
+
+# Output:
+
+3×3 DataFrame
+ Row │ check_name          pass_rate  num_failures 
+     │ String              Float64    Int64        
+─────┼─────────────────────────────────────────────
+   1 │ Positive Amount          75.0             1
+   2 │ Valid Currency           75.0             1
+   3 │ No Missing Amounts      100.0             0
 ```
 
 ### Contributing
