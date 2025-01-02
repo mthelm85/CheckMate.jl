@@ -358,26 +358,26 @@ function get_columns(data, cols)::Vector
 end
 
 function check_rows(columns, check::Check)
-    failing_rows = Int[]
-    failing_values = NamedTuple[]
+    n = length(first(columns))
+    failing_rows = sizehint!(Int[], n)  # Use max possible size
+    failing_values = sizehint!(NamedTuple{Tuple(check.columns)}[], n)
     
-    for (i, vals) in enumerate(zip(columns...))
+    col_names = Tuple(check.columns)
+    
+    @inbounds for i in 1:n
+        vals = ntuple(j -> columns[j][i], length(columns))
         try
             if !check.condition(vals...)
-                push_failure!(failing_rows, failing_values, i, vals, check)
+                push!(failing_rows, i)
+                push!(failing_values, NamedTuple{col_names}(vals))
             end
         catch e
-            # Record both condition failures and errors
-            push_failure!(failing_rows, failing_values, i, vals, check)
+            push!(failing_rows, i)
+            push!(failing_values, NamedTuple{col_names}(vals))
         end
     end
     
     failing_rows, failing_values
-end
-
-function push_failure!(failing_rows, failing_values, idx, vals, check)
-    push!(failing_rows, idx)
-    push!(failing_values, NamedTuple{Tuple(check.columns)}(vals))
 end
 
 function make_summary(checkset::CheckSet, results::Dict, data, start_time::Float64)
