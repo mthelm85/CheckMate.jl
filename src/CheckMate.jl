@@ -326,26 +326,30 @@ function run_check(data, check::Check)::CheckResult
 end
 
 function run_checks(data, checkset::CheckSet, threaded::Bool)::Dict{String,CheckResult}
-    results = Dict{String,CheckResult}()
-    
     if threaded && length(checkset.checks) > 1
-        # Thread-safe dictionary access
-        locks = Dict(check.name => ReentrantLock() for check in checkset.checks)
-        
+        # Pre-allocate dictionary with known size to avoid resizing during concurrent access
+        results = Dict{String,CheckResult}()
+        sizehint!(results, length(checkset.checks))
+
+        # Use a single lock for the entire dictionary to ensure thread safety
+        results_lock = ReentrantLock()
+
         @threads for check in checkset.checks
             result = run_check(data, check)
-            lock(locks[check.name]) do
+            lock(results_lock) do
                 results[check.name] = result
             end
         end
+
+        return results
     else
         # Sequential execution
+        results = Dict{String,CheckResult}()
         for check in checkset.checks
             results[check.name] = run_check(data, check)
         end
+        return results
     end
-    
-    return results
 end
 
 function has_required_columns(data, cols)::Bool

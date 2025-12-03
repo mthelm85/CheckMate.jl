@@ -86,9 +86,8 @@ The pattern for individual `@check` statements is:
 
 Notes:
 
-- You should used named functions in your `@check` declarations (e.g., `x -> x > 0` will not work).
-- Also, negation in validation functions 
-is not currently supported (e.g., `!ismissing(:col)` won't work, but `ismissing(col)` will work.)
+- You must use named functions in your `@check` declarations (e.g., `x -> x > 0` will not work). Define a named function like `is_positive(x) = x > 0` instead.
+- Negation and other operators work fine **inside** your validation functions, but cannot be applied directly in the macro call (e.g., `!ismissing(:col)` won't work in the macro, but `ismissing(col)` will, or you can wrap `!ismissing` in a named function).
 
 ### Running Checks
 

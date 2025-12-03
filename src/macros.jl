@@ -2,57 +2,13 @@ using MacroTools
 
 function extract_columns(expr)::Vector{Symbol}
     cols = Symbol[]
-    
-    function traverse(ex)
-        if @capture(ex, f_(args__))
-            for arg in args
-                if arg isa QuoteNode && arg.value isa Symbol
-                    push!(cols, arg.value)
-                end
-            end
-        elseif ex isa Expr
-            foreach(traverse, ex.args)
+    MacroTools.postwalk(expr) do ex
+        if ex isa QuoteNode && ex.value isa Symbol
+            push!(cols, ex.value)
         end
+        ex
     end
-    
-    traverse(expr)
     unique!(cols)
-    return cols
-end
-
-function validate_check_args(name, func)
-    name isa String || throw(ArgumentError("Check name must be a string"))
-    func isa Expr && func.head == :call || throw(ArgumentError("Check must be a function call"))
-    nothing
-end
-
-function transform_check(ex, checks)::Union{Expr,Nothing}
-    if !@capture(ex, @check_(name_, call_))
-        return nothing
-    end
-    
-    try
-        validate_check_args(name, call)
-        
-        func_name = call.args[1]
-        cols = extract_columns(call)
-        
-        return quote
-            push!($checks, Check(
-                $(esc(name)),
-                let check_func = $(esc(func_name))
-                    (args...) -> check_func(args...)
-                end,
-                $cols
-            ))
-        end
-    catch e
-        throw(ArgumentError("Invalid @check syntax: $(sprint(showerror, e))"))
-    end
-end
-
-function transform_checkset_expr(expr, checks)::Vector{Expr}
-    filter(x -> x !== nothing, map(x -> transform_check(x, checks), expr.args))
 end
 
 """
@@ -82,16 +38,36 @@ checks = @checkset "Payment Validation" begin
 end
 ```
 
-Note: Check conditions must be defined as named functions. Lambda expressions 
+Note: Check conditions must be defined as named functions. Lambda expressions
 (e.g., `x -> x > 0`) are not supported.
 """
 macro checkset(name, expr)
     checks = gensym(:checks)
+    check_exprs = Expr[]
+
+    for arg in expr.args
+        if @capture(arg, @check(check_name_, call_))
+            # Validate
+            check_name isa String || error("Check name must be a string, got: $check_name")
+
+            func_name = call.args[1]
+            cols = extract_columns(call)
+
+            push!(check_exprs, quote
+                push!($checks, Check(
+                    $(esc(check_name)),
+                    $(esc(func_name)),
+                    $cols
+                ))
+            end)
+        elseif arg isa Expr && arg.head != :line
+            error("Expected @check macro, got: $arg")
+        end
+    end
+
     return quote
         let $checks = Check[]
-            $(map(filter(x -> x isa Expr, expr.args)) do arg
-                transform_check(arg, checks)
-            end...)
+            $(check_exprs...)
             CheckSet($(esc(name)), $checks)
         end
     end
