@@ -133,6 +133,41 @@ always_passes(x) = true
         end
     end
 
+    @testset "Thread Safety Stress Test" begin
+        # Create a larger dataset to increase contention
+        n = 1000
+        data = TestTable(rand(-10:10, n), rand(-10:10, n))
+        
+        # Create many checks to maximize thread contention
+        checks = @checkset "stress test" begin
+            @check "positive a" is_positive(:a)
+            @check "positive b" is_positive(:b)
+            @check "less than ten a" is_less_than_ten(:a)
+            @check "less than ten b" is_less_than_ten(:b)
+            @check "a greater than b" first_greater_than_second(:a, :b)
+            @check "always passes a" always_passes(:a)
+            @check "always passes b" always_passes(:b)
+            @check "positive a 2" is_positive(:a)
+            @check "positive b 2" is_positive(:b)
+            @check "less than ten a 2" is_less_than_ten(:a)
+        end
+        
+        # Run many iterations - race conditions are probabilistic
+        for iteration in 1:100
+            results = run_checkset(data, checks, threaded=true)
+            
+            # Basic sanity checks
+            @test length(results.check_results) == 10
+            @test all(haskey(results.check_results, name) for name in check_names(checks))
+            
+            # Verify results are consistent
+            for (name, result) in results.check_results
+                @test result.total_rows == n
+                @test length(result.failing_rows) == length(result.failing_values)
+            end
+        end
+    end
+
     @testset "Basic Macro Tests" begin
         # Test empty checkset
         empty_checks = @checkset "empty" begin end

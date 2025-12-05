@@ -2,7 +2,7 @@ module CheckMate
 
 using Tables
 using MacroTools
-using Base.Threads: @threads, nthreads
+using Base.Threads: @spawn, nthreads
 
 include("types.jl")
 include("macros.jl")
@@ -327,28 +327,11 @@ end
 
 function run_checks(data, checkset::CheckSet, threaded::Bool)::Dict{String,CheckResult}
     if threaded && length(checkset.checks) > 1
-        # Pre-allocate dictionary with known size to avoid resizing during concurrent access
-        results = Dict{String,CheckResult}()
-        sizehint!(results, length(checkset.checks))
-
-        # Use a single lock for the entire dictionary to ensure thread safety
-        results_lock = ReentrantLock()
-
-        @threads for check in checkset.checks
-            result = run_check(data, check)
-            lock(results_lock) do
-                results[check.name] = result
-            end
-        end
-
-        return results
+        tasks = [@spawn run_check(data, check) for check in checkset.checks]
+        results = fetch.(tasks)
+        return Dict(check.name => result for (check, result) in zip(checkset.checks, results))
     else
-        # Sequential execution
-        results = Dict{String,CheckResult}()
-        for check in checkset.checks
-            results[check.name] = run_check(data, check)
-        end
-        return results
+        return Dict(check.name => run_check(data, check) for check in checkset.checks)
     end
 end
 
