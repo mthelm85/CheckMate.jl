@@ -96,21 +96,24 @@ end
 """
     total_failures(summary::CheckSummary)::Int
 
-Calculate the total number of failing rows across all checks.
+Calculate the total number of check failures across all checks.
+
+Note: a single row that fails multiple checks is counted once per check.
+To get the unique set of failing rows, use `failing_rows(summary)`.
 
 # Arguments
 - `summary::CheckSummary`: A summary object containing the results of multiple checks.
 
 # Returns
-Total count of rows that failed validation across all checks.
+Total count of check failures across all checks.
 
 # Examples
 ```julia
-total_failed = total_failures(summary)  # Returns the total number of failing rows
+total_failed = total_failures(summary)  # Returns the total number of check failures
 ```
 """
 function total_failures(summary::CheckSummary)::Int
-    sum(result -> length(result.failing_rows), values(summary.check_results))
+    sum(result -> length(result.failing_rows), values(summary.check_results); init=0)
 end
 
 """
@@ -130,21 +133,22 @@ rate = pass_rate(summary)  # Returns 95.0 if 95% of rows passed all checks
 ```
 """
 function pass_rate(summary::CheckSummary)::Float64
-    # Get the total number of rows from any check result
-    # Since all checks run on the same data, total_rows should be the same
-    first_result = first(values(summary.check_results))
-    total_rows = first_result.total_rows
-    
+    isempty(summary.check_results) && return 100.0
+
+    # Take the maximum total_rows across all results so that checks that failed
+    # due to missing columns (which store total_rows=0) don't corrupt the result.
+    total_rows = maximum(result.total_rows for result in values(summary.check_results); init=0)
+
     if total_rows == 0
-        return 0.0
+        return 100.0
     end
-    
+
     # A row passes if it's not in the failing_rows of any check
     all_failing_rows = Set{Int}()
     for result in values(summary.check_results)
         union!(all_failing_rows, result.failing_rows)
     end
-    
+
     n_failed = length(all_failing_rows)
     round(100.0 * (total_rows - n_failed) / total_rows, digits=2)
 end
@@ -258,7 +262,11 @@ all_failed_indices = failing_rows(summary)  # Returns [1, 2, 5, 8, ...]
 ```
 """
 function failing_rows(summary::CheckSummary)::Vector{Int}
-    sort(unique(vcat([failing_rows(result) for result in values(summary.check_results)]...)))
+    all_failing = Set{Int}()
+    for result in values(summary.check_results)
+        union!(all_failing, result.failing_rows)
+    end
+    sort!(collect(all_failing))
 end
 
 """
@@ -279,8 +287,9 @@ columns = check_columns(checkset, "column_type_check")  # Returns [:a, :b]
 ```
 """
 function check_columns(checkset::CheckSet, check_name::String)::Vector{Symbol}
-    in(check_name, map(x -> x.name, checkset.checks)) || error("Check '$check_name' in checkset '$checkset' not found")
-    checkset.checks[findfirst(x -> x.name == check_name, checkset.checks)].columns
+    idx = findfirst(x -> x.name == check_name, checkset.checks)
+    isnothing(idx) && error("Check '$check_name' in checkset '$checkset' not found")
+    checkset.checks[idx].columns
 end
 
 """
@@ -305,22 +314,31 @@ end
 
 function run_check(data, check::Check)::CheckResult
     !has_required_columns(data, check.columns) && return CheckResult(
-        false, 
-        Int[], 
+        false,
+        Int[],
         NamedTuple[],
         "Required columns not found: $(check.columns)",
-        0  # No valid rows if columns missing
+        0
     )
-    
+
     columns = get_columns(data, check.columns)
-    failing_rows, failing_values = check_rows(columns, check)
+    failing_rows, failing_values, exception_count = check_rows(columns, check)
     total_rows = length(first(columns))
-    
+    n_failed = length(failing_rows)
+
+    message = if n_failed == 0
+        "All rows passed"
+    elseif exception_count == 0
+        "$n_failed rows failed"
+    else
+        "$n_failed rows failed ($exception_count due to exceptions in condition function)"
+    end
+
     CheckResult(
         isempty(failing_rows),
         failing_rows,
         failing_values,
-        isempty(failing_rows) ? "All rows passed" : "$(length(failing_rows)) rows failed",
+        message,
         total_rows
     )
 end
@@ -336,7 +354,7 @@ function run_checks(data, checkset::CheckSet, threaded::Bool)::Dict{String,Check
 end
 
 function has_required_columns(data, cols)::Bool
-    colnames = Tables.columnnames(data) |> collect
+    colnames = Tables.columnnames(data)
     return all(col -> col in colnames, cols)
 end
 
@@ -346,11 +364,12 @@ end
 
 function check_rows(columns, check::Check)
     n = length(first(columns))
-    failing_rows = sizehint!(Int[], n)  # Use max possible size
+    failing_rows = sizehint!(Int[], n)
     failing_values = sizehint!(NamedTuple{Tuple(check.columns)}[], n)
-    
+    exception_count = 0
+
     col_names = Tuple(check.columns)
-    
+
     @inbounds for i in 1:n
         vals = ntuple(j -> columns[j][i], length(columns))
         try
@@ -358,22 +377,14 @@ function check_rows(columns, check::Check)
                 push!(failing_rows, i)
                 push!(failing_values, NamedTuple{col_names}(vals))
             end
-        catch e
+        catch
+            exception_count += 1
             push!(failing_rows, i)
             push!(failing_values, NamedTuple{col_names}(vals))
         end
     end
-    
-    failing_rows, failing_values
-end
 
-function make_summary(checkset::CheckSet, results::Dict, data, start_time::Float64)
-    CheckSummary(
-        checkset.name,
-        results,
-        data,
-        round(time() - start_time, digits=2)
-    )
+    failing_rows, failing_values, exception_count
 end
 
 end # module

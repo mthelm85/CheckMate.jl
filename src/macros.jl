@@ -1,16 +1,3 @@
-using MacroTools
-
-function extract_columns(expr)::Vector{Symbol}
-    cols = Symbol[]
-    MacroTools.postwalk(expr) do ex
-        if ex isa QuoteNode && ex.value isa Symbol
-            push!(cols, ex.value)
-        end
-        ex
-    end
-    unique!(cols)
-end
-
 """
     @checkset(name::String, block::Expr)::CheckSet
 
@@ -22,24 +9,22 @@ Create a named set of data validation checks.
 
 # Examples
 ```julia
-# Define your check functions
+# Using named functions
 function check_amount_positive(amount)
     amount > 0
 end
 
-function check_valid_currency(currency)
-    currency in ("USD", "EUR", "GBP")
-end
-
-# Create a checkset
 checks = @checkset "Payment Validation" begin
     @check "Amount is positive" check_amount_positive(:amount)
     @check "Valid currency" check_valid_currency(:currency)
 end
-```
 
-Note: Check conditions must be defined as named functions. Lambda expressions
-(e.g., `x -> x > 0`) are not supported.
+# Using anonymous functions (lambdas)
+checks = @checkset "Lambda Validation" begin
+    @check "positive" (x -> x > 0)(:amount)
+    @check "valid currency" (c -> c in ("USD", "EUR", "GBP"))(:currency)
+end
+```
 """
 macro checkset(name, expr)
     checks = gensym(:checks)
@@ -47,16 +32,26 @@ macro checkset(name, expr)
 
     for arg in expr.args
         if @capture(arg, @check(check_name_, call_))
-            # Validate
             check_name isa String || error("Check name must be a string, got: $check_name")
 
-            func_name = call.args[1]
-            cols = extract_columns(call)
+            func_expr = call.args[1]
+            func_expr isa Symbol || (func_expr isa Expr && func_expr.head == :->) ||
+                error("Check condition must be a named function or lambda (x -> ...), got: $func_expr")
+
+            # Extract columns only from the call arguments (args[2:end]), not the
+            # function/lambda expression, to avoid false positives from lambda bodies.
+            cols = Symbol[]
+            for carg in call.args[2:end]
+                if carg isa QuoteNode && carg.value isa Symbol
+                    push!(cols, carg.value)
+                end
+            end
+            unique!(cols)
 
             push!(check_exprs, quote
                 push!($checks, Check(
                     $(esc(check_name)),
-                    $(esc(func_name)),
+                    $(esc(func_expr)),
                     $cols
                 ))
             end)

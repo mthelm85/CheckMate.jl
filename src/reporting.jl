@@ -58,8 +58,12 @@ function print_summary_footer(io::IO, summary::CheckSummary)
     n_passed = count(x -> x.second.passed, summary.check_results)
     
     println(io, "\nSummary:")
-    @printf(io, " %d/%d checks passed (%.1f%%)\n", 
-        n_passed, n_total, 100.0 * n_passed / n_total)
+    if n_total == 0
+        println(io, " 0/0 checks (empty checkset)")
+    else
+        @printf(io, " %d/%d checks passed (%.1f%%)\n",
+            n_passed, n_total, 100.0 * n_passed / n_total)
+    end
     println(io, "Checks completed in $(summary.time_elapsed) seconds")
 end
 

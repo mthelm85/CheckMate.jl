@@ -64,21 +64,24 @@ always_passes(x) = true
 
     @testset "Error Handling" begin
         data = TestTable([1, 2, 3], [4, 5, 6])
-        
+
         checks = @checkset "error handling" begin
             @check "always errors" always_errors(:a)
             @check "always passes" always_passes(:b)
         end
-        
+
         results = run_checkset(data, checks)
-        
+
         # First check should fail but not prevent second check from running
         @test !results.check_results["always errors"].passed
         @test results.check_results["always passes"].passed
-        
+
         # All rows should fail for the erroring check
         @test length(results.check_results["always errors"].failing_rows) == 3
         @test results.check_results["always errors"].total_rows == 3
+
+        # Message should surface that failures were caused by exceptions
+        @test occursin("exception", lowercase(results.check_results["always errors"].message))
     end
 
     @testset "Multiple Checks" begin
@@ -293,7 +296,42 @@ always_passes(x) = true
             @check "positive values" is_positive(:a)
             @check "a greater than b" first_greater_than_second(:a, :b)
         end
-        
+
         @test check_names(checks) == ["positive values", "a greater than b"]
+    end
+
+    @testset "Empty CheckSet Edge Cases" begin
+        data = TestTable([1, 2, 3], [4, 5, 6])
+        empty_checks = @checkset "empty" begin end
+        results = run_checkset(data, empty_checks)
+
+        @test pass_rate(results) == 100.0
+        @test failing_rows(results) == Int[]
+        @test total_failures(results) == 0
+        @test_nowarn sprint(show, results)
+    end
+
+    @testset "Lambda Function Support" begin
+        data = TestTable([1, -2, 3, -4, 5], [1, 2, 3, 4, 5])
+
+        lambda_checks = @checkset "lambda validation" begin
+            @check "positive lambda" (x -> x > 0)(:a)
+        end
+
+        results = run_checkset(data, lambda_checks)
+
+        @test !results.check_results["positive lambda"].passed
+        @test results.check_results["positive lambda"].failing_rows == [2, 4]
+        @test results.check_results["positive lambda"].total_rows == 5
+        @test check_columns(lambda_checks, "positive lambda") == [:a]
+
+        # Multi-column lambda
+        multi_lambda_checks = @checkset "multi lambda" begin
+            @check "a gt b lambda" ((x, y) -> x > y)(:a, :b)
+        end
+        @test check_columns(multi_lambda_checks, "a gt b lambda") == [:a, :b]
+
+        multi_results = run_checkset(data, multi_lambda_checks)
+        @test !multi_results.check_results["a gt b lambda"].passed
     end
 end
