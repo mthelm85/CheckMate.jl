@@ -9,8 +9,9 @@ A Julia package for data validation that allows you to define and run sets of ch
 ## Features
 
 - Easy-to-use macro syntax for defining validation rules
+- Support for named functions and anonymous functions (lambdas) in checks
 - Support for single and multi-column validation checks
-- Detailed failure reporting with row-level information
+- Detailed failure reporting with row-level information, including when failures are caused by exceptions in condition functions
 - Optional multi-threaded validation for large datasets
 - Compatible with any data source that implements the Tables.jl interface
 
@@ -36,13 +37,12 @@ df = DataFrame(
 # Define your validation functions (must return Bool where true=pass/false=fail)
 is_positive(x) = x > 0
 valid_currency(x) = x in ("USD", "EUR", "GBP")
-notmissing(x) = !ismissing(x)
 
-# Define validation rules
+# Define validation rules using named functions or lambdas
 checks = @checkset "Payment Validation" begin
     @check "Positive Amount" is_positive(:amount)
     @check "Valid Currency" valid_currency(:currency)
-    @check "No Missing Amounts" notmissing(:amount)
+    @check "No Missing Amounts" (!ismissing)(:amount)
 end
 
 # Run the checks
@@ -84,10 +84,17 @@ The pattern for individual `@check` statements is:
 @check <YOUR_CHECK_NAME> f(args...)::Bool # f must return a Bool (where true=pass, false=fail)
 ```
 
-Notes:
+Both named functions and anonymous functions (lambdas) are supported as the condition:
 
-- You must use named functions in your `@check` declarations (e.g., `x -> x > 0` will not work). Define a named function like `is_positive(x) = x > 0` instead.
-- Negation and other operators work fine **inside** your validation functions, but cannot be applied directly in the macro call (e.g., `!ismissing(:col)` won't work in the macro, but `ismissing(col)` will, or you can wrap `!ismissing` in a named function).
+```julia
+checks = @checkset "Inline Validation" begin
+    @check "Positive Amount"  (x -> x > 0)(:amount)
+    @check "Valid Currency"   (x -> x in ("USD", "EUR", "GBP"))(:currency)
+    @check "A greater than B" ((a, b) -> a > b)(:col1, :col2)
+end
+```
+
+Note: Negation and other operators work fine **inside** your validation functions, but cannot be applied directly to the macro call itself (e.g., `!ismissing(:col)` won't work, but `(!ismissing)(:col)` or a lambda `(x -> !ismissing(x))(:col)` will).
 
 ### Running Checks
 
