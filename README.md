@@ -11,9 +11,12 @@ A Julia package for data validation that allows you to define and run sets of ch
 - Easy-to-use macro syntax for defining validation rules
 - Support for named functions and anonymous functions (lambdas) in checks
 - Support for single and multi-column validation checks
-- Detailed failure reporting with row-level information, including when failures are caused by exceptions in condition functions
-- Optional multi-threaded validation for large datasets
-- Compatible with any data source that implements the Tables.jl interface
+- Detailed failure reporting with row-level information, including the first exception when a condition function throws
+- Warning-level checks that are reported without failing validation
+- `assert_valid` for pipelines and tests: throws a `ValidationError` containing the full report
+- Results as plain Julia values, per-row diagnostics, and the summary itself is a Tables.jl table
+- Fast: conditions are compiled for your column types, with optional multi-threading across checks
+- Compatible with any data source that implements the Tables.jl interface, row- or column-oriented
 
 ## Installation
 
@@ -62,7 +65,7 @@ Check Summary: Payment Validation
 
 Summary:
  1/3 checks passed (33.3%)
-Checks completed in 0.02 seconds
+Checks completed in 20.3 ms
 ```
 
 ## Details
@@ -94,7 +97,22 @@ checks = @checkset "Inline Validation" begin
 end
 ```
 
-Note: Negation and other operators work fine **inside** your validation functions, but cannot be applied directly to the macro call itself (e.g., `!ismissing(:col)` won't work, but `(!ismissing)(:col)` or a lambda `(x -> !ismissing(x))(:col)` will).
+Any expression that evaluates to a function works as the condition, e.g. `(!ismissing)(:col)`, `(==("USD"))(:currency)`, or `Base.isempty(:name)`.
+
+Note: Negation and other operators work fine **inside** your validation functions, but cannot be applied directly to the macro call itself (e.g., `!ismissing(:col)` raises an error when the checkset is defined, but `(!ismissing)(:col)` or a lambda `(x -> !ismissing(x))(:col)` works).
+
+### Warning-Level Checks
+
+Append `severity=:warning` to report a check's failures without failing validation:
+
+```julia
+checks = @checkset "Payments" begin
+    @check "Positive Amount"  (x -> x > 0)(:amount)
+    @check "Unusually Large"  (x -> x < 100_000)(:amount) severity=:warning
+end
+```
+
+Warnings are shown with ⚠ in the report and listed by `warning_checks(results)`. They are ignored by `failed_checks`, `all_passed`, `assert_valid`, `failing_rows(results)`, `total_failures` and the overall `pass_rate`.
 
 ### Running Checks
 
@@ -106,12 +124,18 @@ results = run_checkset(data, checks)
 
 # Parallel execution
 results = run_checkset(data, checks, threaded=true)
+
+# Run and throw a ValidationError (with the full report) if any check fails
+results = assert_valid(data, checks)
 ```
 
 ### Analyzing Results
 
 ```julia
-# Get failed checks
+# Did every check pass?
+all_passed(results)
+
+# Get failed checks (in definition order)
 failed = failed_checks(results)
 
 # Get passing checks
@@ -123,24 +147,22 @@ rate = pass_rate(results)
 # Get failing row indices
 rows = failing_rows(results)
 
-# Create detailed report
+# Which checks did each failing row break?
 using DataFrames
+DataFrame(row_failures(results))
 
-summary = DataFrame(
-    check_name=check_names(checks),
-    pass_rate=[pass_rate(results, check) for check in check_names(checks)],
-    num_failures=[length(failing_rows(results,check)) for check in check_names(checks)]
-)
+# A CheckSummary is a Tables.jl table with one row per check
+DataFrame(results)
 
 # Output:
 
-3×3 DataFrame
- Row │ check_name          pass_rate  num_failures 
-     │ String              Float64    Int64        
-─────┼─────────────────────────────────────────────
-   1 │ Positive Amount          75.0             1
-   2 │ Valid Currency           75.0             1
-   3 │ No Missing Amounts      100.0             0
+3×7 DataFrame
+ Row │ check               severity  passed  failures  exceptions  pass_rate  message
+     │ String              Symbol    Bool    Int64     Int64       Float64    String
+─────┼────────────────────────────────────────────────────────────────────────────────────────
+   1 │ Positive Amount     error      false         1           0       75.0  1 rows failed
+   2 │ Valid Currency      error      false         1           0       75.0  1 rows failed
+   3 │ No Missing Amounts  error       true         0           0      100.0  All rows passed
 ```
 
 ### Contributing

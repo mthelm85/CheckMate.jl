@@ -1,5 +1,6 @@
 using CheckMate
 using Documenter
+using MaterialDocs
 
 DocMeta.setdocmeta!(CheckMate, :DocTestSetup, :(using CheckMate); recursive=true)
 
@@ -7,13 +8,22 @@ makedocs(;
     modules=[CheckMate],
     authors="Matt Helm mthelm85@gmail.com",
     sitename="CheckMate.jl",
-    format=Documenter.HTML(;
+    format=Material3(;
+        theme=:amber_workshop,
+        dark_mode=:toggle,
         canonical="https://mthelm85.github.io/CheckMate.jl",
         edit_link="main",
-        assets=String[],
+        assets=["assets/custom.css"],
     ),
     pages=[
         "Home" => "index.md",
+        "Getting Started" => "getting-started.md",
+        "Manual" => [
+            "Defining Checks" => "defining-checks.md",
+            "Working with Results" => "results.md",
+        ],
+        "Examples" => "examples.md",
+        "API Reference" => "api.md",
     ],
 )
 

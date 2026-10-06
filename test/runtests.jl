@@ -1,4 +1,5 @@
 using CheckMate
+using Aqua
 using Tables
 using Test
 
@@ -22,6 +23,10 @@ always_errors(x) = error("test error")
 always_passes(x) = true
 
 @testset "CheckMate.jl" begin
+    @testset "Code Quality (Aqua)" begin
+        Aqua.test_all(CheckMate)
+    end
+
     @testset "Single Column Validation" begin
         data = TestTable([1, -2, 3, -4, 5], [1, 2, 3, 4, 5])
         
@@ -236,24 +241,22 @@ always_passes(x) = true
         
         results = run_checkset(data, checks)
 
-        # Test string output
-        output = sprint(show, results)
+        # Full report via text/plain and print_summary
+        output = sprint(show, MIME("text/plain"), results)
         @test occursin("Check Summary: report test", output)
         @test occursin(":", output)  # Should contain column names
         @test occursin("checks completed in", lowercase(output))
+        @test sprint(print_summary, results) == output
 
-        # Test MIME output
-        mime_output = sprint(show, MIME("text/plain"), results)
-        @test occursin("Check Summary", mime_output)
+        # Compact two-argument show
+        @test sprint(show, results) == "CheckSummary(\"report test\": 0/2 checks passed)"
+        @test sprint(show, checks) == "CheckSet(\"report test\", 2 checks)"
+        @test occursin("CheckSet(\"report test\"", sprint(show, [checks]))
 
-        # Test CheckSet display
-        set_output = sprint(show, checks)
-        @test occursin("CheckSet:", set_output)
-        @test occursin("Number of checks: 2", set_output)
-        
-        # Test MIME output for CheckSet
+        # Full CheckSet display
         set_mime_output = sprint(show, MIME("text/plain"), checks)
         @test occursin("CheckSet:", set_mime_output)
+        @test occursin("Number of checks: 2", set_mime_output)
     end
 
     @testset "Type Functionality" begin
@@ -333,5 +336,260 @@ always_passes(x) = true
 
         multi_results = run_checkset(data, multi_lambda_checks)
         @test !multi_results.check_results["a gt b lambda"].passed
+    end
+
+    @testset "Callable Expression Conditions" begin
+        data = (x = [1, missing, 3], s = ["a", "", "c"])
+
+        checks = @checkset "callable expressions" begin
+            @check "negated function" (!ismissing)(:x)
+            @check "qualified name" Base.isempty(:s)
+            @check "curried function" (==(1))(:x)
+        end
+        results = run_checkset(data, checks)
+
+        @test failing_rows(results, "negated function") == [2]
+        @test failing_rows(results, "qualified name") == [1, 3]
+        @test failing_rows(results, "curried function") == [2, 3]
+        @test check_columns(checks, "negated function") == [:x]
+    end
+
+    @testset "Invalid Check Definitions" begin
+        expansion_error(ex) =
+            try
+                macroexpand(@__MODULE__, ex)
+                nothing
+            catch e
+                sprint(showerror, e isa LoadError ? e.error : e)
+            end
+
+        # `!ismissing(:x)` parses as `!` applied to `ismissing(:x)`, leaving no column arguments
+        msg = expansion_error(:(@checkset "bad" begin
+            @check "negated call" !ismissing(:x)
+        end))
+        @test msg !== nothing && occursin("no column arguments", msg)
+
+        msg = expansion_error(:(@checkset "bad" begin
+            @check "not a call" true
+        end))
+        @test msg !== nothing && occursin("must be a function applied to columns", msg)
+
+        msg = expansion_error(:(@checkset "bad" begin
+            @check "same" (x -> x > 0)(:a)
+            @check "same" (x -> x > 1)(:a)
+        end))
+        @test msg !== nothing && occursin("Duplicate check name", msg)
+    end
+
+    @testset "Row-Oriented Tables" begin
+        rows = [(a = 1, b = 2), (a = -1, b = 3), (a = 4, b = 1)]
+        checks = @checkset "rows" begin
+            @check "positive a" (x -> x > 0)(:a)
+            @check "a gt b" ((x, y) -> x > y)(:a, :b)
+        end
+        results = run_checkset(rows, checks)
+
+        @test failing_rows(results, "positive a") == [2]
+        @test failing_rows(results, "a gt b") == [1, 2]
+        @test results.check_results["a gt b"].failing_values == [(a = 1, b = 2), (a = -1, b = 3)]
+        @test failing_rows(run_checkset(rows, checks; threaded = true)) == [1, 2]
+    end
+
+    @testset "Non-Bool Condition Results" begin
+        checks = @checkset "non-bool" begin
+            @check "missing result" (x -> x > 0)(:a)
+        end
+        result = run_checkset((a = [1, missing, 3],), checks).check_results["missing result"]
+
+        @test result.failing_rows == [2]
+        @test occursin("1 due to exceptions", result.message)
+    end
+
+    @testset "Error Messages" begin
+        checks = @checkset "named set" begin
+            @check "only" (x -> true)(:a)
+        end
+        err = try check_columns(checks, "nope"); "" catch e; sprint(showerror, e) end
+        @test err == "Check 'nope' in checkset 'named set' not found"
+    end
+
+    @testset "Missing Columns and Pass Rate" begin
+        data = TestTable([1, 2, 3], [1, 2, 3])
+        checks = @checkset "missing col" begin
+            @check "ok" is_positive(:a)
+            @check "gone" is_positive(:zzz)
+        end
+        results = run_checkset(data, checks)
+
+        @test results.check_results["gone"].missing_columns == [:zzz]
+        @test results.check_results["ok"].missing_columns == Symbol[]
+        @test failed_checks(results) == ["gone"]
+        @test pass_rate(results) == 0.0           # no row can pass a check that couldn't run
+        @test pass_rate(results, "gone") == 0.0
+
+        # Empty tables pass rather than fail
+        empty = run_checkset((a = Int[],), @checkset "empty" begin
+            @check "positive" is_positive(:a)
+        end)
+        @test pass_rate(empty) == 100.0
+        @test pass_rate(empty, "positive") == 100.0
+    end
+
+    @testset "Exception Details" begin
+        checks = @checkset "exceptions" begin
+            @check "errors" always_errors(:a)
+            @check "fine" is_positive(:a)
+        end
+        results = run_checkset(TestTable([1, 2], [1, 2]), checks)
+        result = results.check_results["errors"]
+
+        @test result.exception_count == 2
+        @test result.first_exception isa Pair
+        @test first(result.first_exception) == 1
+        @test last(result.first_exception) isa ErrorException
+        @test results.check_results["fine"].first_exception === nothing
+        @test occursin("First exception (row 1): test error", sprint(print_summary, results))
+    end
+
+    @testset "Definition Order" begin
+        names = ["check $i" for i in 1:20]
+        checks = CheckSet("ordered", [Check(n, iseven, [:a]) for n in names])
+        results = run_checkset((a = [1, 2],), checks)
+
+        @test results.check_order == names
+        @test failed_checks(results) == names
+        @test passed_checks(run_checkset((a = [2, 4],), checks)) == names
+
+        # Ties in the report keep definition order
+        report = sprint(print_summary, results)
+        positions = [findfirst("✗ $n:", report) for n in names]
+        @test issorted(first.(positions))
+
+        # Summaries built with the old 3-argument constructor still work
+        legacy = CheckSummary("legacy", results.check_results, 0.0)
+        @test sort(failed_checks(legacy)) == sort(names)
+    end
+
+    @testset "Execution Time" begin
+        results = run_checkset((a = [1],), @checkset "t" begin
+            @check "p" is_positive(:a)
+        end)
+        @test execution_time(results) > 0.0     # not rounded away
+        @test CheckMate.format_duration(0.0123) == "12.3 ms"
+        @test CheckMate.format_duration(2.5) == "2.50 seconds"
+    end
+
+    @testset "Pass/Fail Helpers" begin
+        checks = @checkset "helpers" begin
+            @check "positive" is_positive(:a)
+        end
+        good = run_checkset((a = [1, 2],), checks)
+        bad = run_checkset((a = [1, -2],), checks)
+
+        @test all_passed(good)
+        @test !all_passed(bad)
+        @test assert_valid(good) === good
+        @test assert_valid((a = [1, 2],), checks) isa CheckSummary
+        @test_throws ValidationError assert_valid(bad)
+        @test_throws ValidationError assert_valid((a = [-1],), checks; threaded = true)
+
+        err = try assert_valid(bad); nothing catch e; e end
+        @test err.summary === bad
+        msg = sprint(showerror, err)
+        @test startswith(msg, "ValidationError: 1 of 1 checks failed in checkset \"helpers\": positive")
+        @test occursin("Row 2: a=-2", msg)
+    end
+
+    @testset "Summary as a Table" begin
+        checks = @checkset "table" begin
+            @check "positive" is_positive(:a)
+            @check "small" is_less_than_ten(:a) severity=:warning
+        end
+        results = run_checkset((a = [1, -2, 30, 4],), checks)
+
+        @test Tables.istable(results)
+        cols = Tables.columntable(results)
+        @test cols.check == ["positive", "small"]
+        @test cols.severity == [:error, :warning]
+        @test cols.passed == [false, false]
+        @test cols.failures == [1, 1]
+        @test cols.exceptions == [0, 0]
+        @test cols.pass_rate == [75.0, 75.0]
+        @test length(Tables.rowtable(results)) == 2
+    end
+
+    @testset "Row Failures" begin
+        checks = @checkset "rows" begin
+            @check "positive" is_positive(:a)
+            @check "small" is_less_than_ten(:a)
+            @check "b positive" is_positive(:b) severity=:warning
+        end
+        results = run_checkset(TestTable([1, -2, 30, -40], [1, 1, 1, -1]), checks)
+        rf = row_failures(results)
+
+        @test Tables.istable(rf)
+        @test rf.row == [2, 3, 4]
+        @test rf.checks == [["positive"], ["small"], ["positive", "b positive"]]
+        @test row_failures(run_checkset(TestTable([1], [1]), checks)) == (row = Int[], checks = Vector{String}[])
+    end
+
+    @testset "Warning Severity" begin
+        checks = @checkset "severity" begin
+            @check "positive" is_positive(:a)
+            @check "small" is_less_than_ten(:a) severity=:warning
+            @check "explicit error" is_positive(:b) severity=:error
+        end
+        @test [c.severity for c in checks.checks] == [:error, :warning, :error]
+        @test occursin("[warning]", sprint(show, MIME("text/plain"), checks))
+
+        # Only the warning check fails
+        results = run_checkset(TestTable([1, 20, 3], [1, 1, 1]), checks)
+        @test !results.check_results["small"].passed
+        @test failed_checks(results) == String[]
+        @test warning_checks(results) == ["small"]
+        @test passed_checks(results) == ["positive", "explicit error"]
+        @test all_passed(results)
+        @test assert_valid(results) === results
+        @test failing_rows(results) == Int[]
+        @test failing_rows(results, "small") == [2]
+        @test total_failures(results) == 0
+        @test pass_rate(results) == 100.0
+        @test pass_rate(results, "small") ≈ 66.67
+
+        report = sprint(print_summary, results)
+        @test occursin("⚠ small: 1 rows failed", report)
+        @test occursin("2/3 checks passed (66.7%), 1 with warnings", report)
+
+        # A warning check with a missing column doesn't zero the overall pass rate
+        missing_warning = run_checkset(TestTable([1], [1]), @checkset "mw" begin
+            @check "ok" is_positive(:a)
+            @check "gone" is_positive(:zzz) severity=:warning
+        end)
+        @test pass_rate(missing_warning) == 100.0
+        @test warning_checks(missing_warning) == ["gone"]
+
+        # Severity can come from a variable, and is validated
+        level = :warning
+        dynamic = @checkset "dynamic" begin
+            @check "w" is_positive(:a) severity=level
+        end
+        @test dynamic.checks[1].severity === :warning
+        @test_throws ErrorException Check("bad", is_positive, [:a], :fatal)
+
+        # Old 3-argument Check and 5-argument CheckResult constructors default to :error
+        @test Check("legacy", is_positive, [:a]).severity === :error
+        @test CheckResult(true, Int[], NamedTuple[], "ok", 1).severity === :error
+
+        bad_option(ex) =
+            try
+                macroexpand(@__MODULE__, ex)
+                nothing
+            catch e
+                sprint(showerror, e isa LoadError ? e.error : e)
+            end
+        msg = bad_option(:(@checkset "bad" begin
+            @check "x" is_positive(:a) level=:warning
+        end))
+        @test msg !== nothing && occursin("unsupported option", msg)
     end
 end

@@ -1,7 +1,7 @@
 name = "CheckMate"
 uuid = "94fda9bc-e29e-424a-aa2b-1addfed2164c"
+version = "0.2.0"
 authors = ["Matt Helm mthelm85@gmail.com"]
-version = "0.1.6"
 
 [deps]
 MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
@@ -9,12 +9,16 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 
 [compat]
+Aqua = "0.8"
 MacroTools = "0.5.13"
+Printf = "<0.0.1, 1"
 Tables = "1.12.0"
+Test = "<0.0.1, 1"
 julia = "1.6"
 
 [extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Aqua", "Test"]

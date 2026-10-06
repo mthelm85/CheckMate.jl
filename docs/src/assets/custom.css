@@ -1,0 +1,4 @@
+/* Keep wide @example output (e.g. the 80-column report banner) inside the content column. */
+pre.md-output {
+    overflow-x: auto;
+}
