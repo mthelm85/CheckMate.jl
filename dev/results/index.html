@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Working with Results — CheckMate.jl</title>
-  <link rel="stylesheet" href="../assets/materialdocs.css?v=6670c61a">
+  <link rel="stylesheet" href="../assets/materialdocs.css?v=8c766632">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
   <meta name="title" content="Working with Results — CheckMate.jl">
   <meta property="og:title" content="Working with Results — CheckMate.jl">
@@ -101,7 +101,7 @@ summary = run_checkset(customers, checks)</code></pre>
 
 Summary:
  0/4 checks passed (0.0%)
-Checks completed in 305.7 ms
+Checks completed in 263.1 ms
 </code></pre>
 </div>
 <h2 id="Did-validation-pass?" class="md-heading">Did validation pass?<a href="#Did-validation-pass?" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
@@ -145,7 +145,7 @@ end</code></pre>
 
 Summary:
  0/4 checks passed (0.0%)
-Checks completed in 305.7 ms</code></pre>
+Checks completed in 263.1 ms</code></pre>
 </div>
 <p>The thrown error keeps the summary in its <code class="md-code-inline">summary</code> field, so a <code class="md-code-inline">catch</code> block can still inspect the failures.</p>
 <h2 id="Which-checks-failed?" class="md-heading">Which checks failed?<a href="#Which-checks-failed?" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
@@ -266,7 +266,7 @@ Checks completed in 305.7 ms</code></pre>
 <button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
 <pre><code class="language-julia">execution_time(summary)   # seconds</code></pre>
 </div>
-<pre class="md-output md-output-text"><code class="nohighlight ansi">0.305679998</code></pre>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">0.26309543</code></pre>
 </div>
 <h2 id="Printing-the-report-elsewhere" class="md-heading">Printing the report elsewhere<a href="#Printing-the-report-elsewhere" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
 <p><a href="../api/#CheckMate.print_summary"><code class="md-code-inline">print_summary</code></a> writes the report to any <code class="md-code-inline">IO</code>, such as a log file, or captures it as a string:</p>
@@ -325,6 +325,6 @@ text = sprint(print_summary, summary)</code></pre>
   <script>hljs.highlightAll();</script>
   <script src="../siteinfo.js"></script>
   <script src="../../versions.js"></script>
-  <script src="../assets/materialdocs.js?v=6670c61a"></script>
+  <script src="../assets/materialdocs.js?v=8c766632"></script>
 </body>
 </html>
