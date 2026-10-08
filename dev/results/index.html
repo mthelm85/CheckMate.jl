@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Working with Results — CheckMate.jl</title>
+  <link rel="stylesheet" href="../assets/materialdocs.css?v=6670c61a">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <meta name="title" content="Working with Results — CheckMate.jl">
+  <meta property="og:title" content="Working with Results — CheckMate.jl">
+  <meta property="twitter:title" content="Working with Results — CheckMate.jl">
+  <meta name="description" content="Documentation for CheckMate.jl.">
+  <meta property="og:description" content="Documentation for CheckMate.jl.">
+  <meta property="twitter:description" content="Documentation for CheckMate.jl.">
+  <meta property="og:url" content="https://mthelm85.github.io/CheckMate.jl/results/">
+  <meta property="twitter:url" content="https://mthelm85.github.io/CheckMate.jl/results/">
+  <link rel="canonical" href="https://mthelm85.github.io/CheckMate.jl/results/">
+  <link rel="stylesheet" href="../assets/custom.css">
+  <script>
+    (function(){
+      document.documentElement.classList.add('no-transition');
+      var t=localStorage.getItem('md-theme');if(t)document.documentElement.setAttribute('data-theme',t);
+      window.addEventListener('load',function(){setTimeout(function(){document.documentElement.classList.remove('no-transition');},50);});
+    })()
+  </script>
+</head>
+<body data-warn-outdated>
+  <header class="md-navbar">
+    <button id="md-hamburger" class="md-icon-btn md-hamburger" aria-label="Toggle navigation" aria-expanded="false"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+    <span class="md-navbar-title">CheckMate.jl</span>
+    <span class="md-navbar-spacer"></span>
+    <button id="md-search-btn" class="md-search-bar" aria-label="Search documentation" aria-expanded="false">
+      <svg class="md-icon md-search-bar-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <span class="md-search-bar-label">Search docs</span>
+      <kbd class="md-search-bar-kbd">Ctrl K</kbd>
+    </button>
+    <div id="md-version" class="md-version" hidden>
+      <button id="md-version-btn" class="md-version-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Select documentation version">
+        <span id="md-version-current" class="md-version-current"></span>
+        <svg class="md-icon md-version-caret" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+      <ul id="md-version-menu" class="md-version-menu" role="listbox" hidden></ul>
+    </div>
+    <a class="md-icon-btn md-repo-link" href="https://github.com/mthelm85/CheckMate.jl" title="View the repository on GitHub" aria-label="View the repository on GitHub" rel="noopener" target="_blank"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0012 .3z"/></svg><span class="md-repo-label">GitHub</span></a>
+    <button id="md-theme-toggle" class="md-icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="md-icon md-icon-light" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg><svg class="md-icon md-icon-dark" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></button>
+  </header>
+  <div class="md-layout">
+    <nav class="md-sidebar">
+      <a href="../">Home</a>
+      <a href="../getting-started/">Getting Started</a>
+      <div class="md-nav-section">
+        <span class="md-nav-section-title">Manual</span>
+        <a href="../defining-checks/">Defining Checks</a>
+        <a href="../results/" class="md-nav-active">Working with Results</a>
+      </div>
+      <a href="../examples/">Examples</a>
+      <a href="../api/">API Reference</a>
+    </nav>
+    <main class="md-content">
+      <article class="md-article">
+      <div class="md-article-actions"><a class="md-icon-btn md-edit-link" href="https://github.com/mthelm85/CheckMate.jl/blob/main/docs/src/results.md" title="Edit source on GitHub" aria-label="Edit source on GitHub"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 000-1.41l-2.34-2.34a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></a></div>
+<h1 id="Working-with-Results" class="md-heading">Working with Results<a href="#Working-with-Results" class="md-heading-anchor" aria-label="Link to this section">#</a></h1>
+<p><a href="../api/#CheckMate.run_checkset"><code class="md-code-inline">run_checkset</code></a> returns a <a href="../api/#CheckMate.CheckSummary"><code class="md-code-inline">CheckSummary</code></a>. Displaying it prints a report, and a set of accessor functions turns it into plain Julia values for further analysis.</p>
+<p>The examples on this page use the following data and checks:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">using CheckMate, DataFrames
+
+customers = DataFrame(
+    id      = 1:8,
+    age     = [34, 17, 52, 41, 130, 29, 63, 22],
+    email   = [&quot;a@x.com&quot;, &quot;b@x.com&quot;, &quot;bad-email&quot;, &quot;d@x.com&quot;,
+               &quot;e@x.com&quot;, &quot;f@x&quot;, &quot;g@x.com&quot;, &quot;h@x.com&quot;],
+    country = [&quot;US&quot;, &quot;US&quot;, &quot;CA&quot;, &quot;MX&quot;, &quot;US&quot;, &quot;ZZ&quot;, &quot;CA&quot;, &quot;US&quot;],
+)
+
+checks = @checkset &quot;Customer Validation&quot; begin
+    @check &quot;Adult&quot;         (a -&gt; a &gt;= 18)(:age)
+    @check &quot;Plausible age&quot; (a -&gt; a &lt;= 120)(:age)
+    @check &quot;Valid email&quot;   (e -&gt; occursin(r&quot;^[^@\s]+@[^@\s]+\.\w+$&quot;, e))(:email)
+    @check &quot;Known country&quot; (c -&gt; c in (&quot;US&quot;, &quot;CA&quot;, &quot;MX&quot;))(:country)
+end
+
+summary = run_checkset(customers, checks)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">
+================================================================================
+<span class="sgr34"><span class="sgr1">Check Summary: Customer Validation</span></span>
+================================================================================
+
+<span class="sgr31"><span class="sgr1">✗ </span></span>Valid email: <span class="sgr31">2 rows failed</span>
+   Row 3: email=bad-email
+   Row 6: email=f@x
+<span class="sgr31"><span class="sgr1">✗ </span></span>Adult: <span class="sgr31">1 rows failed</span>
+   Row 2: age=17
+<span class="sgr31"><span class="sgr1">✗ </span></span>Plausible age: <span class="sgr31">1 rows failed</span>
+   Row 5: age=130
+<span class="sgr31"><span class="sgr1">✗ </span></span>Known country: <span class="sgr31">1 rows failed</span>
+   Row 6: country=ZZ
+
+Summary:
+ 0/4 checks passed (0.0%)
+Checks completed in 305.7 ms
+</code></pre>
+</div>
+<h2 id="Did-validation-pass?" class="md-heading">Did validation pass?<a href="#Did-validation-pass?" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p><a href="../api/#CheckMate.all_passed"><code class="md-code-inline">all_passed</code></a> answers the yes-or-no question:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">all_passed(summary)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">false</code></pre>
+</div>
+<p>To stop a script or pipeline when data is invalid, use <a href="../api/#CheckMate.assert_valid"><code class="md-code-inline">assert_valid</code></a>. It returns the summary when every check passes, and otherwise throws a <a href="../api/#CheckMate.ValidationError"><code class="md-code-inline">ValidationError</code></a> whose message includes the full report:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">summary = assert_valid(customers, checks)   # run and assert in one step
+assert_valid(summary)                       # or assert on an existing summary</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">try
+    assert_valid(summary)
+catch err
+    showerror(stdout, err)
+end</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">ValidationError: 4 of 4 checks failed in checkset &quot;Customer Validation&quot;: Adult, Plausible age, Valid email, Known country
+================================================================================
+<span class="sgr34"><span class="sgr1">Check Summary: Customer Validation</span></span>
+================================================================================
+
+<span class="sgr31"><span class="sgr1">✗ </span></span>Valid email: <span class="sgr31">2 rows failed</span>
+   Row 3: email=bad-email
+   Row 6: email=f@x
+<span class="sgr31"><span class="sgr1">✗ </span></span>Adult: <span class="sgr31">1 rows failed</span>
+   Row 2: age=17
+<span class="sgr31"><span class="sgr1">✗ </span></span>Plausible age: <span class="sgr31">1 rows failed</span>
+   Row 5: age=130
+<span class="sgr31"><span class="sgr1">✗ </span></span>Known country: <span class="sgr31">1 rows failed</span>
+   Row 6: country=ZZ
+
+Summary:
+ 0/4 checks passed (0.0%)
+Checks completed in 305.7 ms</code></pre>
+</div>
+<p>The thrown error keeps the summary in its <code class="md-code-inline">summary</code> field, so a <code class="md-code-inline">catch</code> block can still inspect the failures.</p>
+<h2 id="Which-checks-failed?" class="md-heading">Which checks failed?<a href="#Which-checks-failed?" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failed_checks(summary)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">4-element Vector{String}:
+ &quot;Adult&quot;
+ &quot;Plausible age&quot;
+ &quot;Valid email&quot;
+ &quot;Known country&quot;</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">passed_checks(summary)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">String[]</code></pre>
+</div>
+<p>Both return check names in the order the checks were defined.</p>
+<h2 id="Which-rows-failed?" class="md-heading">Which rows failed?<a href="#Which-rows-failed?" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p><a href="../api/#CheckMate.failing_rows"><code class="md-code-inline">failing_rows</code></a> has three methods:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failing_rows(summary)                  # unique rows that failed any check</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">4-element Vector{Int64}:
+ 2
+ 3
+ 5
+ 6</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failing_rows(summary, &quot;Valid email&quot;)   # rows that failed one check</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">2-element Vector{Int64}:
+ 3
+ 6</code></pre>
+</div>
+<p>The third method takes a single <a href="../api/#CheckMate.CheckResult"><code class="md-code-inline">CheckResult</code></a>, the per-check result stored in a summary.</p>
+<p>Use the row indices to pull the offending records out of the original table:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">customers[failing_rows(summary), :]</code></pre>
+</div>
+<div class="md-output md-output-html">
+<div><div style = "float: left;"><span>4×4 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">id</th><th style = "text-align: left;">age</th><th style = "text-align: left;">email</th><th style = "text-align: left;">country</th></tr><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;"></th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "String" style = "text-align: left;">String</th><th title = "String" style = "text-align: left;">String</th></tr></thead><tbody><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: right;">17</td><td style = "text-align: left;">b@x.com</td><td style = "text-align: left;">US</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: right;">3</td><td style = "text-align: right;">52</td><td style = "text-align: left;">bad-email</td><td style = "text-align: left;">CA</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">3</td><td style = "text-align: right;">5</td><td style = "text-align: right;">130</td><td style = "text-align: left;">e@x.com</td><td style = "text-align: left;">US</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">4</td><td style = "text-align: right;">6</td><td style = "text-align: right;">29</td><td style = "text-align: left;">f@x</td><td style = "text-align: left;">ZZ</td></tr></tbody></table></div>
+</div>
+</div>
+<p>To see <em>why</em> each row failed, <a href="../api/#CheckMate.row_failures"><code class="md-code-inline">row_failures</code></a> lists the checks that each failing row broke. It returns a table, so it converts directly to a <code class="md-code-inline">DataFrame</code>:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">DataFrame(row_failures(summary))</code></pre>
+</div>
+<div class="md-output md-output-html">
+<div><div style = "float: left;"><span>4×2 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">row</th><th style = "text-align: left;">checks</th></tr><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;"></th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Vector{String}" style = "text-align: left;">Array…</th></tr></thead><tbody><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: left;">[&quot;Adult&quot;]</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: right;">3</td><td style = "text-align: left;">[&quot;Valid email&quot;]</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">3</td><td style = "text-align: right;">5</td><td style = "text-align: left;">[&quot;Plausible age&quot;]</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">4</td><td style = "text-align: right;">6</td><td style = "text-align: left;">[&quot;Valid email&quot;, &quot;Known country&quot;]</td></tr></tbody></table></div>
+</div>
+</div>
+<h2 id="Pass-rates" class="md-heading">Pass rates<a href="#Pass-rates" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p><a href="../api/#CheckMate.pass_rate"><code class="md-code-inline">pass_rate</code></a> with only a summary returns the percentage of rows that passed <em>every</em> check. With a check name, it returns the pass rate for that one check:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">pass_rate(summary)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">50.0</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">pass_rate(summary, &quot;Valid email&quot;)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">75.0</code></pre>
+</div>
+<p>If a check could not run because its columns are missing from the data, its pass rate is <code class="md-code-inline">0.0</code>, and so is the overall pass rate, since no row can be said to have passed it.</p>
+<h2 id="Counting-failures" class="md-heading">Counting failures<a href="#Counting-failures" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p><a href="../api/#CheckMate.total_failures"><code class="md-code-inline">total_failures</code></a> counts failures across all checks. A row that fails two checks counts twice, so this number can be larger than <code class="md-code-inline">length(failing_rows(summary))</code>:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">total_failures(summary), length(failing_rows(summary))</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">(5, 4)</code></pre>
+</div>
+<h2 id="The-summary-as-a-table" class="md-heading">The summary as a table<a href="#The-summary-as-a-table" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>A <a href="../api/#CheckMate.CheckSummary"><code class="md-code-inline">CheckSummary</code></a> is itself a <a href="https://github.com/JuliaData/Tables.jl">Tables.jl</a> table with one row per check, so a per-check report is one call away. Save it, plot it, or compare it across runs:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">DataFrame(summary)</code></pre>
+</div>
+<div class="md-output md-output-html">
+<div><div style = "float: left;"><span>4×7 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">check</th><th style = "text-align: left;">severity</th><th style = "text-align: left;">passed</th><th style = "text-align: left;">failures</th><th style = "text-align: left;">exceptions</th><th style = "text-align: left;">pass_rate</th><th style = "text-align: left;">message</th></tr><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;"></th><th title = "String" style = "text-align: left;">String</th><th title = "Symbol" style = "text-align: left;">Symbol</th><th title = "Bool" style = "text-align: left;">Bool</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Float64" style = "text-align: left;">Float64</th><th title = "String" style = "text-align: left;">String</th></tr></thead><tbody><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: left;">Adult</td><td style = "text-align: left;">error</td><td style = "text-align: right;">false</td><td style = "text-align: right;">1</td><td style = "text-align: right;">0</td><td style = "text-align: right;">87.5</td><td style = "text-align: left;">1 rows failed</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: left;">Plausible age</td><td style = "text-align: left;">error</td><td style = "text-align: right;">false</td><td style = "text-align: right;">1</td><td style = "text-align: right;">0</td><td style = "text-align: right;">87.5</td><td style = "text-align: left;">1 rows failed</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">3</td><td style = "text-align: left;">Valid email</td><td style = "text-align: left;">error</td><td style = "text-align: right;">false</td><td style = "text-align: right;">2</td><td style = "text-align: right;">0</td><td style = "text-align: right;">75.0</td><td style = "text-align: left;">2 rows failed</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">4</td><td style = "text-align: left;">Known country</td><td style = "text-align: left;">error</td><td style = "text-align: right;">false</td><td style = "text-align: right;">1</td><td style = "text-align: right;">0</td><td style = "text-align: right;">87.5</td><td style = "text-align: left;">1 rows failed</td></tr></tbody></table></div>
+</div>
+</div>
+<p>The same works with any Tables.jl sink, for example <code class="md-code-inline">CSV.write(&quot;report.csv&quot;, summary)</code>.</p>
+<h2 id="Warnings" class="md-heading">Warnings<a href="#Warnings" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>Checks defined with <code class="md-code-inline">severity=:warning</code> (see <a href="../defining-checks/#Warning-level-checks">Warning-level checks</a>) appear in the report and in the summary table, but do not count as failures:</p>
+<ul class="md-list-tight">
+<li><p><a href="../api/#CheckMate.failed_checks"><code class="md-code-inline">failed_checks</code></a> and <a href="../api/#CheckMate.all_passed"><code class="md-code-inline">all_passed</code></a> ignore them, and <a href="../api/#CheckMate.assert_valid"><code class="md-code-inline">assert_valid</code></a> never throws because of them.</p>
+</li>
+<li><p><a href="../api/#CheckMate.failing_rows"><code class="md-code-inline">failing_rows(summary)</code></a>, <a href="../api/#CheckMate.total_failures"><code class="md-code-inline">total_failures</code></a> and the overall <a href="../api/#CheckMate.pass_rate"><code class="md-code-inline">pass_rate</code></a> only consider error-level checks.</p>
+</li>
+<li><p><a href="../api/#CheckMate.warning_checks"><code class="md-code-inline">warning_checks</code></a> lists the warning checks that did not pass.</p>
+</li>
+</ul>
+<p>Per-check functions such as <code class="md-code-inline">failing_rows(summary, name)</code> and <code class="md-code-inline">pass_rate(summary, name)</code> work the same for both severities, and <a href="../api/#CheckMate.row_failures"><code class="md-code-inline">row_failures</code></a> includes both.</p>
+<h2 id="Timing" class="md-heading">Timing<a href="#Timing" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">execution_time(summary)   # seconds</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">0.305679998</code></pre>
+</div>
+<h2 id="Printing-the-report-elsewhere" class="md-heading">Printing the report elsewhere<a href="#Printing-the-report-elsewhere" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p><a href="../api/#CheckMate.print_summary"><code class="md-code-inline">print_summary</code></a> writes the report to any <code class="md-code-inline">IO</code>, such as a log file, or captures it as a string:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">open(&quot;validation.log&quot;, &quot;w&quot;) do io
+    print_summary(io, summary)
+end
+
+text = sprint(print_summary, summary)</code></pre>
+</div>
+<p>Inside collections and string interpolation a summary prints in a compact one-line form:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">&quot;Result: $summary&quot;</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">&quot;Result: CheckSummary(\&quot;Customer Validation\&quot;: 0/4 checks passed)&quot;</code></pre>
+</div>
+<h2 id="Running-checks-in-parallel" class="md-heading">Running checks in parallel<a href="#Running-checks-in-parallel" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>On large tables, pass <code class="md-code-inline">threaded = true</code> to run the checks in a checkset concurrently, one task per check:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">summary = run_checkset(data, checks; threaded = true)</code></pre>
+</div>
+<div class="md-admonition md-admonition-note">
+<p class="md-admonition-title">Start Julia with threads</p>
+<div class="md-admonition-body">
+<p>Threading only helps when Julia is started with more than one thread, for example <code class="md-code-inline">julia --threads=auto</code>. Parallelism is across checks, not across rows, so a checkset with a single check gains nothing.</p>
+</div>
+</div>
+      </article>
+      <footer class="md-footer">
+<p>Built with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and <a href="https://github.com/mthelm85/MaterialDocs.jl">MaterialDocs.jl</a>.</p>
+      </footer>
+    </main>
+    <aside class="md-toc">
+      <div class="md-toc-inner">
+        <p class="md-toc-title">On this page</p>
+          <a class="md-toc-link md-toc-h2" href="#Did-validation-pass?">Did validation pass?</a>
+          <a class="md-toc-link md-toc-h2" href="#Which-checks-failed?">Which checks failed?</a>
+          <a class="md-toc-link md-toc-h2" href="#Which-rows-failed?">Which rows failed?</a>
+          <a class="md-toc-link md-toc-h2" href="#Pass-rates">Pass rates</a>
+          <a class="md-toc-link md-toc-h2" href="#Counting-failures">Counting failures</a>
+          <a class="md-toc-link md-toc-h2" href="#The-summary-as-a-table">The summary as a table</a>
+          <a class="md-toc-link md-toc-h2" href="#Warnings">Warnings</a>
+          <a class="md-toc-link md-toc-h2" href="#Timing">Timing</a>
+          <a class="md-toc-link md-toc-h2" href="#Printing-the-report-elsewhere">Printing the report elsewhere</a>
+          <a class="md-toc-link md-toc-h2" href="#Running-checks-in-parallel">Running checks in parallel</a>
+      </div>
+    </aside>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia-repl.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../siteinfo.js"></script>
+  <script src="../../versions.js"></script>
+  <script src="../assets/materialdocs.js?v=6670c61a"></script>
+</body>
+</html>
