@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Reference — CheckMate.jl</title>
+  <link rel="stylesheet" href="../assets/materialdocs.css?v=8f1ce384">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <meta name="title" content="API Reference — CheckMate.jl">
+  <meta property="og:title" content="API Reference — CheckMate.jl">
+  <meta property="twitter:title" content="API Reference — CheckMate.jl">
+  <meta name="description" content="Documentation for CheckMate.jl.">
+  <meta property="og:description" content="Documentation for CheckMate.jl.">
+  <meta property="twitter:description" content="Documentation for CheckMate.jl.">
+  <meta property="og:url" content="https://mthelm85.github.io/CheckMate.jl/api/">
+  <meta property="twitter:url" content="https://mthelm85.github.io/CheckMate.jl/api/">
+  <link rel="canonical" href="https://mthelm85.github.io/CheckMate.jl/api/">
+  <link rel="stylesheet" href="../assets/custom.css">
+  <script>
+    (function(){
+      document.documentElement.classList.add('no-transition');
+      var t=localStorage.getItem('md-theme');if(t)document.documentElement.setAttribute('data-theme',t);
+      window.addEventListener('load',function(){setTimeout(function(){document.documentElement.classList.remove('no-transition');},50);});
+    })()
+  </script>
+</head>
+<body data-warn-outdated>
+  <header class="md-navbar">
+    <button id="md-hamburger" class="md-icon-btn md-hamburger" aria-label="Toggle navigation" aria-expanded="false"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+    <span class="md-navbar-title">CheckMate.jl</span>
+    <span class="md-navbar-spacer"></span>
+    <button id="md-search-btn" class="md-search-bar" aria-label="Search documentation" aria-expanded="false">
+      <svg class="md-icon md-search-bar-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <span class="md-search-bar-label">Search docs</span>
+      <kbd class="md-search-bar-kbd">Ctrl K</kbd>
+    </button>
+    <div id="md-version" class="md-version" hidden>
+      <button id="md-version-btn" class="md-version-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Select documentation version">
+        <span id="md-version-current" class="md-version-current"></span>
+        <svg class="md-icon md-version-caret" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+      <ul id="md-version-menu" class="md-version-menu" role="listbox" hidden></ul>
+    </div>
+    <a class="md-icon-btn md-repo-link" href="https://github.com/mthelm85/CheckMate.jl" title="View the repository on GitHub" aria-label="View the repository on GitHub" rel="noopener" target="_blank"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0012 .3z"/></svg><span class="md-repo-label">GitHub</span></a>
+    <button id="md-theme-toggle" class="md-icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="md-icon md-icon-light" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg><svg class="md-icon md-icon-dark" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></button>
+  </header>
+  <div class="md-layout">
+    <nav class="md-sidebar">
+      <a href="../">Home</a>
+      <a href="../getting-started/">Getting Started</a>
+      <div class="md-nav-section">
+        <span class="md-nav-section-title">Manual</span>
+        <a href="../defining-checks/">Defining Checks</a>
+        <a href="../results/">Working with Results</a>
+      </div>
+      <a href="../examples/">Examples</a>
+      <a href="../api/" class="md-nav-active">API Reference</a>
+    </nav>
+    <main class="md-content">
+      <article class="md-article">
+      <div class="md-article-actions"><a class="md-icon-btn md-edit-link" href="https://github.com/mthelm85/CheckMate.jl/blob/main/docs/src/api.md" title="Edit source on GitHub" aria-label="Edit source on GitHub"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 000-1.41l-2.34-2.34a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></a></div>
+<h1 id="API-Reference" class="md-heading">API Reference<a href="#API-Reference" class="md-heading-anchor" aria-label="Link to this section">#</a></h1>
+<div class="md-index">
+<ul>
+<li><a href="#CheckMate.Check"><code>CheckMate.Check</code></a></li>
+<li><a href="#CheckMate.CheckResult"><code>CheckMate.CheckResult</code></a></li>
+<li><a href="#CheckMate.CheckSet"><code>CheckMate.CheckSet</code></a></li>
+<li><a href="#CheckMate.CheckSummary"><code>CheckMate.CheckSummary</code></a></li>
+<li><a href="#CheckMate.ValidationError"><code>CheckMate.ValidationError</code></a></li>
+<li><a href="#CheckMate.all_passed"><code>CheckMate.all_passed</code></a></li>
+<li><a href="#CheckMate.assert_valid"><code>CheckMate.assert_valid</code></a></li>
+<li><a href="#CheckMate.check_columns"><code>CheckMate.check_columns</code></a></li>
+<li><a href="#CheckMate.check_names"><code>CheckMate.check_names</code></a></li>
+<li><a href="#CheckMate.execution_time"><code>CheckMate.execution_time</code></a></li>
+<li><a href="#CheckMate.failed_checks"><code>CheckMate.failed_checks</code></a></li>
+<li><a href="#CheckMate.failing_rows"><code>CheckMate.failing_rows</code></a></li>
+<li><a href="#CheckMate.pass_rate"><code>CheckMate.pass_rate</code></a></li>
+<li><a href="#CheckMate.passed_checks"><code>CheckMate.passed_checks</code></a></li>
+<li><a href="#CheckMate.print_summary"><code>CheckMate.print_summary</code></a></li>
+<li><a href="#CheckMate.row_failures"><code>CheckMate.row_failures</code></a></li>
+<li><a href="#CheckMate.run_checkset"><code>CheckMate.run_checkset</code></a></li>
+<li><a href="#CheckMate.total_failures"><code>CheckMate.total_failures</code></a></li>
+<li><a href="#CheckMate.warning_checks"><code>CheckMate.warning_checks</code></a></li>
+<li><a href="#CheckMate.@checkset"><code>CheckMate.@checkset</code></a></li>
+</ul>
+</div>
+<h2 id="Defining-checks" class="md-heading">Defining checks<a href="#Defining-checks" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-docstring" id="CheckMate.@checkset">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.@checkset</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/macros.jl#L1-L39" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">@checkset(name::String, block::Expr)::CheckSet</code></pre>
+</div>
+<p>Create a named set of data validation checks.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">name</code>: A descriptive name for the set of checks</p>
+</li>
+<li><p><code class="md-code-inline">block</code>: A block of check definitions using @check syntax</p>
+</li>
+</ul>
+<p>Each check has the form <code class="md-code-inline">@check &quot;name&quot; f(:col1, :col2, ...)</code>, where <code class="md-code-inline">f</code> is any expression that evaluates to a function returning <code class="md-code-inline">Bool</code>. Append <code class="md-code-inline">severity=:warning</code> to make a check that is reported but does not count as a failure.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia"># Using named functions
+function check_amount_positive(amount)
+    amount &gt; 0
+end
+
+checks = @checkset &quot;Payment Validation&quot; begin
+    @check &quot;Amount is positive&quot; check_amount_positive(:amount)
+    @check &quot;Valid currency&quot; check_valid_currency(:currency)
+end
+
+# Using anonymous functions (lambdas)
+checks = @checkset &quot;Lambda Validation&quot; begin
+    @check &quot;positive&quot; (x -&gt; x &gt; 0)(:amount)
+    @check &quot;valid currency&quot; (c -&gt; c in (&quot;USD&quot;, &quot;EUR&quot;, &quot;GBP&quot;))(:currency)
+end
+
+# Warning-level checks
+checks = @checkset &quot;With Warnings&quot; begin
+    @check &quot;positive&quot; (x -&gt; x &gt; 0)(:amount)
+    @check &quot;round amount&quot; (x -&gt; x % 100 == 0)(:amount) severity=:warning
+end</code></pre>
+</div>
+</div>
+</div>
+<h2 id="Running-checks" class="md-heading">Running checks<a href="#Running-checks" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-docstring" id="CheckMate.run_checkset">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.run_checkset</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L18-L40" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">run_checkset(data, checkset::CheckSet; threaded::Bool=false)::CheckSummary</code></pre>
+</div>
+<p>Execute a complete set of validation checks on the provided data.</p>
+<p>Runs all checks in a given CheckSet, with options for sequential or parallel execution.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">data</code>: The dataset to be validated (must support Tables.jl interface)</p>
+</li>
+<li><p><code class="md-code-inline">checkset::CheckSet</code>: A collection of checks to be performed</p>
+</li>
+<li><p><code class="md-code-inline">threaded::Bool</code>: Whether to run checks in parallel (default: false)</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A <code class="md-code-inline">CheckSummary</code> containing:</p>
+<ul class="md-list-tight">
+<li><p>Name of the checkset</p>
+</li>
+<li><p>Results of individual checks</p>
+</li>
+<li><p>Total execution time</p>
+</li>
+</ul>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">summary = run_checkset(dataset, payment_checks, threaded=true)</code></pre>
+</div>
+</div>
+</div>
+<h2 id="Asserting-validity" class="md-heading">Asserting validity<a href="#Asserting-validity" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-docstring" id="CheckMate.all_passed">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.all_passed</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L85-L95" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">all_passed(summary::CheckSummary)::Bool</code></pre>
+</div>
+<p>Return <code class="md-code-inline">true</code> if every error-level check passed. Warning-level checks are ignored.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">all_passed(summary) || @warn &quot;Validation failed&quot; failed_checks(summary)</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.assert_valid">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.assert_valid</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L98-L112" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">assert_valid(summary::CheckSummary)::CheckSummary
+assert_valid(data, checkset::CheckSet; threaded::Bool=false)::CheckSummary</code></pre>
+</div>
+<p>Throw a <a href="../api/#CheckMate.ValidationError"><code class="md-code-inline">ValidationError</code></a> if any error-level check failed, otherwise return the summary. The second form runs the checkset first.</p>
+<p>Warning-level checks never cause an error.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">summary = assert_valid(df, checks)      # throws if df is invalid
+assert_valid(run_checkset(df, checks))  # same, from an existing summary</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.ValidationError">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.ValidationError</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L67-L73" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">ValidationError(summary::CheckSummary)</code></pre>
+</div>
+<p>Thrown by <a href="../api/#CheckMate.assert_valid"><code class="md-code-inline">assert_valid</code></a> when one or more error-level checks fail. The <code class="md-code-inline">summary</code> field holds the full <a href="../api/#CheckMate.CheckSummary"><code class="md-code-inline">CheckSummary</code></a>, and the error message includes the validation report.</p>
+</div>
+</div>
+<h2 id="Querying-results" class="md-heading">Querying results<a href="#Querying-results" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-docstring" id="CheckMate.failed_checks">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.failed_checks</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L122-L138" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failed_checks(summary::CheckSummary)::Vector{String}</code></pre>
+</div>
+<p>Retrieve the names of all error-level checks that did not pass, in definition order. Warning-level checks are listed by <a href="../api/#CheckMate.warning_checks"><code class="md-code-inline">warning_checks</code></a> instead.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A vector of check names that failed (did not pass).</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">checks = failed_checks(summary)  # Returns [&#39;check1&#39;, &#39;check2&#39;, ...]</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.passed_checks">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.passed_checks</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L158-L173" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">passed_checks(summary::CheckSummary)::Vector{String}</code></pre>
+</div>
+<p>Retrieve the names of all checks that passed successfully, in definition order.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A vector of check names that passed.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">checks = passed_checks(summary)  # Returns [&#39;check3&#39;, &#39;check4&#39;, ...]</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.warning_checks">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.warning_checks</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L143-L153" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">warning_checks(summary::CheckSummary)::Vector{String}</code></pre>
+</div>
+<p>Retrieve the names of all warning-level checks that did not pass, in definition order.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">warnings = warning_checks(summary)  # Returns [&quot;Round amounts&quot;, ...]</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.failing_rows">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.failing_rows</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L287-L302" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failing_rows(result::CheckResult)::Vector{Int}</code></pre>
+</div>
+<p>Retrieve the row indices that failed for a specific check result.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">result::CheckResult</code>: A result object for a single check.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A vector of row indices that failed the check.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failed_indices = failing_rows(result)  # Returns [2, 5, 8, ...]</code></pre>
+</div>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failing_rows(summary::CheckSummary, check_name::String)::Vector{Int}</code></pre>
+</div>
+<p>Retrieve the row indices that failed for a specific named check.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+<li><p><code class="md-code-inline">check_name::String</code>: The name of the specific check to retrieve failing rows for.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A vector of row indices that failed the specified check.</p>
+<p><strong>Throws</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">ErrorException</code> if the specified check name is not found in the summary.</p>
+</li>
+</ul>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failed_indices = failing_rows(summary, &quot;column_type_check&quot;)  # Returns [3, 7, 10, ...]</code></pre>
+</div>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failing_rows(summary::CheckSummary)::Vector{Int}</code></pre>
+</div>
+<p>Retrieve all unique failing row indices across all error-level checks. Rows that only failed warning-level checks are not included.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A sorted vector of unique row indices that failed any check.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">all_failed_indices = failing_rows(summary)  # Returns [1, 2, 5, 8, ...]</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.row_failures">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.row_failures</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L357-L373" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">row_failures(summary::CheckSummary)</code></pre>
+</div>
+<p>List, for each row that failed at least one check, the names of the checks it failed. Both error- and warning-level checks are included.</p>
+<p>Returns a Tables.jl column table, a <code class="md-code-inline">NamedTuple</code> with columns <code class="md-code-inline">row</code> (sorted ascending) and <code class="md-code-inline">checks</code> (check names in definition order), so it can be passed straight to <code class="md-code-inline">DataFrame</code>.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">rf = row_failures(summary)
+rf.row      # [2, 3, 5]
+rf.checks   # [[&quot;Positive Amount&quot;], [&quot;Valid Currency&quot;], [&quot;Positive Amount&quot;, &quot;Valid Currency&quot;]]</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.pass_rate">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.pass_rate</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L202-L221" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">pass_rate(summary::CheckSummary)::Float64</code></pre>
+</div>
+<p>Calculate the percentage of rows that passed all error-level checks.</p>
+<p>Warning-level checks are ignored. If an error-level check could not run because its columns are missing from the data, no row can be said to pass, and the result is <code class="md-code-inline">0.0</code>.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>Percentage of rows that passed all checks, rounded to two decimal places (0-100).</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">rate = pass_rate(summary)  # Returns 95.0 if 95% of rows passed all checks</code></pre>
+</div>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">pass_rate(summary::CheckSummary, check_name::String)::Float64</code></pre>
+</div>
+<p>Calculate the pass rate for a specific check based on number of rows that passed.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+<li><p><code class="md-code-inline">check_name::String</code>: The name of the specific check to calculate pass rate for.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>Percentage of rows that passed the specified check, rounded to two decimal places (0-100). Returns <code class="md-code-inline">0.0</code> if the check&#39;s columns are missing from the data, and <code class="md-code-inline">100.0</code> for an empty table.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">rate = pass_rate(summary, &quot;column_type_check&quot;)  # Returns 95.0 if 95% of rows passed this check</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.total_failures">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.total_failures</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L178-L197" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">total_failures(summary::CheckSummary)::Int</code></pre>
+</div>
+<p>Calculate the total number of check failures across all error-level checks.</p>
+<p>Note: a single row that fails multiple checks is counted once per check. To get the unique set of failing rows, use <code class="md-code-inline">failing_rows(summary)</code>. Failures of warning-level checks are not counted.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>Total count of check failures across all checks.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">total_failed = total_failures(summary)  # Returns the total number of check failures</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.execution_time">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.execution_time</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L269-L284" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">execution_time(summary::CheckSummary)::Float64</code></pre>
+</div>
+<p>Retrieve the total execution time of all checks.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">summary::CheckSummary</code>: A summary object containing the results of multiple checks.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>Total execution time in seconds (unrounded).</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">time = execution_time(summary)  # Returns execution time in seconds</code></pre>
+</div>
+</div>
+</div>
+<h2 id="Inspecting-checksets" class="md-heading">Inspecting checksets<a href="#Inspecting-checksets" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-docstring" id="CheckMate.check_names">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.check_names</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L408-L423" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">check_names(checkset::CheckSet)::Vector{String}</code></pre>
+</div>
+<p>Retrieve the names of all checks in a given checkset.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">checkset::CheckSet</code>: A checkset object.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A vector of check names in the specified checkset.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">names = check_names(checkset)  # Returns [&quot;check1&quot;, &quot;check2&quot;, ...]</code></pre>
+</div>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.check_columns">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.check_columns</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/CheckMate.jl#L385-L401" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">check_columns(checkset::CheckSet, check_name::String)::Vector{Symbol}</code></pre>
+</div>
+<p>Retrieve the column names for a specific named check.</p>
+<p><strong>Arguments</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">checkset::CheckSet</code>: A checkset object.</p>
+</li>
+<li><p><code class="md-code-inline">check_name::String</code>: The name of the specific check to retrieve column names for.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<p>A vector of column names used in the specified check.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">columns = check_columns(checkset, &quot;column_type_check&quot;)  # Returns [:a, :b]</code></pre>
+</div>
+</div>
+</div>
+<h2 id="Reporting" class="md-heading">Reporting<a href="#Reporting" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-docstring" id="CheckMate.print_summary">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.print_summary</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/reporting.jl#L4-L16" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">print_summary([io::IO], summary::CheckSummary)</code></pre>
+</div>
+<p>Write the validation report for <code class="md-code-inline">summary</code> to <code class="md-code-inline">io</code> (default <code class="md-code-inline">stdout</code>). This is the same report shown when a <a href="../api/#CheckMate.CheckSummary"><code class="md-code-inline">CheckSummary</code></a> is displayed.</p>
+<p><strong>Examples</strong></p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">open(&quot;validation.log&quot;, &quot;w&quot;) do io
+    print_summary(io, summary)
+end</code></pre>
+</div>
+</div>
+</div>
+<h2 id="Types" class="md-heading">Types<a href="#Types" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<div class="md-docstring" id="CheckMate.Check">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.Check</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/types.jl#L5-L17" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">Check</code></pre>
+</div>
+<p>A single validation rule, created by <code class="md-code-inline">@check</code> inside <a href="../api/#CheckMate.@checkset"><code class="md-code-inline">@checkset</code></a>.</p>
+<p><strong>Fields</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">name::String</code>: The check&#39;s name, used in reports and lookups.</p>
+</li>
+<li><p><code class="md-code-inline">condition::Function</code>: Called once per row with the values of <code class="md-code-inline">columns</code>; returns <code class="md-code-inline">true</code> if the row passes.</p>
+</li>
+<li><p><code class="md-code-inline">columns::Vector{Symbol}</code>: The columns passed to <code class="md-code-inline">condition</code>, in order.</p>
+</li>
+<li><p><code class="md-code-inline">severity::Symbol</code>: <code class="md-code-inline">:error</code> (the default) or <code class="md-code-inline">:warning</code>. Warning checks are reported but do not count as failures.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.CheckSet">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.CheckSet</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/types.jl#L31-L40" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">CheckSet</code></pre>
+</div>
+<p>A named collection of <a href="../api/#CheckMate.Check"><code class="md-code-inline">Check</code></a>s, created with <a href="../api/#CheckMate.@checkset"><code class="md-code-inline">@checkset</code></a> and run with <a href="../api/#CheckMate.run_checkset"><code class="md-code-inline">run_checkset</code></a>.</p>
+<p><strong>Fields</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">name::String</code>: The checkset&#39;s name, shown in the report header.</p>
+</li>
+<li><p><code class="md-code-inline">checks::Vector{Check}</code>: The checks, in definition order.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.CheckResult">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.CheckResult</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/types.jl#L46-L66" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">CheckResult</code></pre>
+</div>
+<p>The outcome of running a single <a href="../api/#CheckMate.Check"><code class="md-code-inline">Check</code></a>. Stored in the <code class="md-code-inline">check_results</code> field of a <a href="../api/#CheckMate.CheckSummary"><code class="md-code-inline">CheckSummary</code></a>.</p>
+<p><strong>Fields</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">passed::Bool</code>: <code class="md-code-inline">true</code> if every row passed.</p>
+</li>
+<li><p><code class="md-code-inline">failing_rows::Vector{Int}</code>: Indices of rows that failed, in ascending order.</p>
+</li>
+<li><p><code class="md-code-inline">failing_values::Vector{NamedTuple}</code>: The column values for each failing row.</p>
+</li>
+<li><p><code class="md-code-inline">message::String</code>: A human-readable description of the result.</p>
+</li>
+<li><p><code class="md-code-inline">total_rows::Int</code>: Number of rows evaluated (<code class="md-code-inline">0</code> if a required column was missing).</p>
+</li>
+<li><p><code class="md-code-inline">severity::Symbol</code>: The check&#39;s severity, <code class="md-code-inline">:error</code> or <code class="md-code-inline">:warning</code>.</p>
+</li>
+<li><p><code class="md-code-inline">missing_columns::Vector{Symbol}</code>: Required columns that were not in the data. When non-empty, no rows were evaluated.</p>
+</li>
+<li><p><code class="md-code-inline">exception_count::Int</code>: Number of rows where the condition threw an exception or returned a non-<code class="md-code-inline">Bool</code> value.</p>
+</li>
+<li><p><code class="md-code-inline">first_exception::Union{Nothing, Pair{Int, Any}}</code>: <code class="md-code-inline">row =&gt; exception</code> for the first such row, or <code class="md-code-inline">nothing</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="md-docstring" id="CheckMate.CheckSummary">
+<div class="md-docstring-header">
+<h4 class="md-docstring-binding"><code>CheckMate.CheckSummary</code></h4>
+<a class="md-docstring-source" href="https://github.com/mthelm85/CheckMate.jl/blob/c4c1c28eac66470f59a09346faf4b1e767316ce5/src/types.jl#L82-L98" title="View source">source</a>
+</div>
+<div class="md-docstring-content">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">CheckSummary</code></pre>
+</div>
+<p>The result of <a href="../api/#CheckMate.run_checkset"><code class="md-code-inline">run_checkset</code></a>. Displaying a <code class="md-code-inline">CheckSummary</code> prints a validation report.</p>
+<p>A <code class="md-code-inline">CheckSummary</code> is also a <a href="https://github.com/JuliaData/Tables.jl">Tables.jl</a> table with one row per check, so <code class="md-code-inline">DataFrame(summary)</code> gives a per-check overview. Its columns are <code class="md-code-inline">check</code>, <code class="md-code-inline">severity</code>, <code class="md-code-inline">passed</code>, <code class="md-code-inline">failures</code>, <code class="md-code-inline">exceptions</code>, <code class="md-code-inline">pass_rate</code> and <code class="md-code-inline">message</code>.</p>
+<p><strong>Fields</strong></p>
+<ul class="md-list-tight">
+<li><p><code class="md-code-inline">checkset_name::String</code>: Name of the checkset that was run.</p>
+</li>
+<li><p><code class="md-code-inline">check_results::Dict{String, CheckResult}</code>: Results keyed by check name.</p>
+</li>
+<li><p><code class="md-code-inline">time_elapsed::Float64</code>: Wall-clock time in seconds.</p>
+</li>
+<li><p><code class="md-code-inline">check_order::Vector{String}</code>: Check names in definition order.</p>
+</li>
+</ul>
+</div>
+</div>
+      </article>
+      <footer class="md-footer">
+<p>Built with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and <a href="https://github.com/mthelm85/MaterialDocs.jl">MaterialDocs.jl</a>.</p>
+      </footer>
+    </main>
+    <aside class="md-toc">
+      <div class="md-toc-inner">
+        <p class="md-toc-title">On this page</p>
+          <a class="md-toc-link md-toc-h2" href="#Defining-checks">Defining checks</a>
+          <a class="md-toc-link md-toc-h2" href="#Running-checks">Running checks</a>
+          <a class="md-toc-link md-toc-h2" href="#Asserting-validity">Asserting validity</a>
+          <a class="md-toc-link md-toc-h2" href="#Querying-results">Querying results</a>
+          <a class="md-toc-link md-toc-h2" href="#Inspecting-checksets">Inspecting checksets</a>
+          <a class="md-toc-link md-toc-h2" href="#Reporting">Reporting</a>
+          <a class="md-toc-link md-toc-h2" href="#Types">Types</a>
+      </div>
+    </aside>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia-repl.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../siteinfo.js"></script>
+  <script src="../../versions.js"></script>
+  <script src="../assets/materialdocs.js?v=8f1ce384"></script>
+</body>
+</html>

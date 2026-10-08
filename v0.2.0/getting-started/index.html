@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Getting Started — CheckMate.jl</title>
+  <link rel="stylesheet" href="../assets/materialdocs.css?v=2caf8f73">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <meta name="title" content="Getting Started — CheckMate.jl">
+  <meta property="og:title" content="Getting Started — CheckMate.jl">
+  <meta property="twitter:title" content="Getting Started — CheckMate.jl">
+  <meta name="description" content="Documentation for CheckMate.jl.">
+  <meta property="og:description" content="Documentation for CheckMate.jl.">
+  <meta property="twitter:description" content="Documentation for CheckMate.jl.">
+  <meta property="og:url" content="https://mthelm85.github.io/CheckMate.jl/getting-started/">
+  <meta property="twitter:url" content="https://mthelm85.github.io/CheckMate.jl/getting-started/">
+  <link rel="canonical" href="https://mthelm85.github.io/CheckMate.jl/getting-started/">
+  <link rel="stylesheet" href="../assets/custom.css">
+  <script>
+    (function(){
+      document.documentElement.classList.add('no-transition');
+      var t=localStorage.getItem('md-theme');if(t)document.documentElement.setAttribute('data-theme',t);
+      window.addEventListener('load',function(){setTimeout(function(){document.documentElement.classList.remove('no-transition');},50);});
+    })()
+  </script>
+</head>
+<body data-warn-outdated>
+  <header class="md-navbar">
+    <button id="md-hamburger" class="md-icon-btn md-hamburger" aria-label="Toggle navigation" aria-expanded="false"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+    <span class="md-navbar-title">CheckMate.jl</span>
+    <span class="md-navbar-spacer"></span>
+    <button id="md-search-btn" class="md-search-bar" aria-label="Search documentation" aria-expanded="false">
+      <svg class="md-icon md-search-bar-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <span class="md-search-bar-label">Search docs</span>
+      <kbd class="md-search-bar-kbd">Ctrl K</kbd>
+    </button>
+    <div id="md-version" class="md-version" hidden>
+      <button id="md-version-btn" class="md-version-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Select documentation version">
+        <span id="md-version-current" class="md-version-current"></span>
+        <svg class="md-icon md-version-caret" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+      <ul id="md-version-menu" class="md-version-menu" role="listbox" hidden></ul>
+    </div>
+    <a class="md-icon-btn md-repo-link" href="https://github.com/mthelm85/CheckMate.jl" title="View the repository on GitHub" aria-label="View the repository on GitHub" rel="noopener" target="_blank"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0012 .3z"/></svg><span class="md-repo-label">GitHub</span></a>
+    <button id="md-theme-toggle" class="md-icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="md-icon md-icon-light" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg><svg class="md-icon md-icon-dark" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></button>
+  </header>
+  <div class="md-layout">
+    <nav class="md-sidebar">
+      <a href="../">Home</a>
+      <a href="../getting-started/" class="md-nav-active">Getting Started</a>
+      <div class="md-nav-section">
+        <span class="md-nav-section-title">Manual</span>
+        <a href="../defining-checks/">Defining Checks</a>
+        <a href="../results/">Working with Results</a>
+      </div>
+      <a href="../examples/">Examples</a>
+      <a href="../api/">API Reference</a>
+    </nav>
+    <main class="md-content">
+      <article class="md-article">
+      <div class="md-article-actions"><a class="md-icon-btn md-edit-link" href="https://github.com/mthelm85/CheckMate.jl/blob/main/docs/src/getting-started.md" title="Edit source on GitHub" aria-label="Edit source on GitHub"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 000-1.41l-2.34-2.34a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></a></div>
+<h1 id="Getting-Started" class="md-heading">Getting Started<a href="#Getting-Started" class="md-heading-anchor" aria-label="Link to this section">#</a></h1>
+<p>This page walks through a complete validation workflow: defining checks, running them, and acting on the results.</p>
+<h2 id="The-workflow" class="md-heading">The workflow<a href="#The-workflow" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>Using CheckMate always takes three steps:</p>
+<ol class="md-list-tight">
+<li><p><strong>Define</strong> a <a href="../api/#CheckMate.CheckSet"><code class="md-code-inline">CheckSet</code></a> with the <a href="../api/#CheckMate.@checkset"><code class="md-code-inline">@checkset</code></a> macro.</p>
+</li>
+<li><p><strong>Run</strong> it against your data with <a href="../api/#CheckMate.run_checkset"><code class="md-code-inline">run_checkset</code></a>, which returns a <a href="../api/#CheckMate.CheckSummary"><code class="md-code-inline">CheckSummary</code></a>.</p>
+</li>
+<li><p><strong>Inspect</strong> the summary, either by reading the printed report or by querying it with functions such as <a href="../api/#CheckMate.failed_checks"><code class="md-code-inline">failed_checks</code></a> and <a href="../api/#CheckMate.failing_rows"><code class="md-code-inline">failing_rows</code></a>.</p>
+</li>
+</ol>
+<h2 id="1.-Write-validation-functions" class="md-heading">1. Write validation functions<a href="#1.-Write-validation-functions" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>A validation function takes one value per column and returns a <code class="md-code-inline">Bool</code>: <code class="md-code-inline">true</code> when the row is valid and <code class="md-code-inline">false</code> when it is not.</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">is_positive(x) = x &gt; 0
+valid_currency(x) = x in (&quot;USD&quot;, &quot;EUR&quot;, &quot;GBP&quot;)</code></pre>
+</div>
+</div>
+<h2 id="2.-Define-a-checkset" class="md-heading">2. Define a checkset<a href="#2.-Define-a-checkset" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>Group related checks into a named checkset. Each <a href="../defining-checks/#Defining-Checks"><code class="md-code-inline">@check</code></a> line has a name and a call that applies a function to one or more columns, written as symbols:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">using CheckMate
+
+checks = @checkset &quot;Payment Validation&quot; begin
+    @check &quot;Positive Amount&quot; is_positive(:amount)
+    @check &quot;Valid Currency&quot;  valid_currency(:currency)
+end</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">CheckSet: &quot;Payment Validation&quot;
+Number of checks: 2
+  ▪ <span class="sgr34">Positive Amount</span> (columns: <span class="sgr36">amount</span>)
+  ▪ <span class="sgr34">Valid Currency</span> (columns: <span class="sgr36">currency</span>)
+</code></pre>
+</div>
+<p>Displaying a checkset lists each check and the columns it reads.</p>
+<h2 id="3.-Run-the-checks" class="md-heading">3. Run the checks<a href="#3.-Run-the-checks" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>Pass any Tables.jl-compatible table to <a href="../api/#CheckMate.run_checkset"><code class="md-code-inline">run_checkset</code></a>:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">using DataFrames
+
+payments = DataFrame(
+    id       = 1:6,
+    amount   = [100, -50, 200, 300, 0, 75],
+    currency = [&quot;USD&quot;, &quot;EUR&quot;, &quot;XXX&quot;, &quot;GBP&quot;, &quot;USD&quot;, &quot;JPY&quot;],
+)
+
+summary = run_checkset(payments, checks)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">
+================================================================================
+<span class="sgr34"><span class="sgr1">Check Summary: Payment Validation</span></span>
+================================================================================
+
+<span class="sgr31"><span class="sgr1">✗ </span></span>Positive Amount: <span class="sgr31">2 rows failed</span>
+   Row 2: amount=-50
+   Row 5: amount=0
+<span class="sgr31"><span class="sgr1">✗ </span></span>Valid Currency: <span class="sgr31">2 rows failed</span>
+   Row 3: currency=XXX
+   Row 6: currency=JPY
+
+Summary:
+ 0/2 checks passed (0.0%)
+Checks completed in 63.2 ms
+</code></pre>
+</div>
+<p>The report lists failed checks first, followed by passing checks. Each failure shows the row index and the values the check saw. Long failure lists are shortened to the first and last five rows.</p>
+<h2 id="4.-Act-on-the-results" class="md-heading">4. Act on the results<a href="#4.-Act-on-the-results" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>The summary can also be queried in code, which is useful in pipelines and tests:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failed_checks(summary)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">2-element Vector{String}:
+ &quot;Positive Amount&quot;
+ &quot;Valid Currency&quot;</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">failing_rows(summary)            # unique rows that failed any check</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">4-element Vector{Int64}:
+ 2
+ 3
+ 5
+ 6</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">pass_rate(summary)               # % of rows that passed every check</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">33.33</code></pre>
+</div>
+<p>A common next step is to split the data into clean and rejected rows:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">bad = failing_rows(summary)
+rejected = payments[bad, :]</code></pre>
+</div>
+<div class="md-output md-output-html">
+<div><div style = "float: left;"><span>4×3 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">id</th><th style = "text-align: left;">amount</th><th style = "text-align: left;">currency</th></tr><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;"></th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "String" style = "text-align: left;">String</th></tr></thead><tbody><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: right;">-50</td><td style = "text-align: left;">EUR</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: right;">3</td><td style = "text-align: right;">200</td><td style = "text-align: left;">XXX</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">3</td><td style = "text-align: right;">5</td><td style = "text-align: right;">0</td><td style = "text-align: left;">USD</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">4</td><td style = "text-align: right;">6</td><td style = "text-align: right;">75</td><td style = "text-align: left;">JPY</td></tr></tbody></table></div>
+</div>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">clean = payments[setdiff(1:nrow(payments), bad), :]</code></pre>
+</div>
+<div class="md-output md-output-html">
+<div><div style = "float: left;"><span>2×3 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">id</th><th style = "text-align: left;">amount</th><th style = "text-align: left;">currency</th></tr><tr class = "columnLabelRow"><th class = "stubheadLabel" style = "font-weight: bold; text-align: right;"></th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "String" style = "text-align: left;">String</th></tr></thead><tbody><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: right;">100</td><td style = "text-align: left;">USD</td></tr><tr class = "dataRow"><td class = "rowLabel" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: right;">4</td><td style = "text-align: right;">300</td><td style = "text-align: left;">GBP</td></tr></tbody></table></div>
+</div>
+</div>
+<div class="md-admonition md-admonition-tip">
+<p class="md-admonition-title">Using CheckMate in a pipeline</p>
+<div class="md-admonition-body">
+<p>To stop a pipeline when validation fails, use <a href="../api/#CheckMate.assert_valid"><code class="md-code-inline">assert_valid</code></a>. It runs the checks and throws a <a href="../api/#CheckMate.ValidationError"><code class="md-code-inline">ValidationError</code></a>, including the full report, if any check fails:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">summary = assert_valid(data, checks)</code></pre>
+</div>
+</div>
+</div>
+<h2 id="Next-steps" class="md-heading">Next steps<a href="#Next-steps" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<ul class="md-list-tight">
+<li><p><a href="../defining-checks/#Defining-Checks">Defining Checks</a> covers lambdas, multi-column checks and common pitfalls.</p>
+</li>
+<li><p><a href="../results/#Working-with-Results">Working with Results</a> covers every way to query a summary.</p>
+</li>
+</ul>
+      </article>
+      <footer class="md-footer">
+<p>Built with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and <a href="https://github.com/mthelm85/MaterialDocs.jl">MaterialDocs.jl</a>.</p>
+      </footer>
+    </main>
+    <aside class="md-toc">
+      <div class="md-toc-inner">
+        <p class="md-toc-title">On this page</p>
+          <a class="md-toc-link md-toc-h2" href="#The-workflow">The workflow</a>
+          <a class="md-toc-link md-toc-h2" href="#1.-Write-validation-functions">1. Write validation functions</a>
+          <a class="md-toc-link md-toc-h2" href="#2.-Define-a-checkset">2. Define a checkset</a>
+          <a class="md-toc-link md-toc-h2" href="#3.-Run-the-checks">3. Run the checks</a>
+          <a class="md-toc-link md-toc-h2" href="#4.-Act-on-the-results">4. Act on the results</a>
+          <a class="md-toc-link md-toc-h2" href="#Next-steps">Next steps</a>
+      </div>
+    </aside>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia-repl.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../siteinfo.js"></script>
+  <script src="../../versions.js"></script>
+  <script src="../assets/materialdocs.js?v=2caf8f73"></script>
+</body>
+</html>

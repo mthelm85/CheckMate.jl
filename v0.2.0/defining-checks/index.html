@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Defining Checks — CheckMate.jl</title>
+  <link rel="stylesheet" href="../assets/materialdocs.css?v=f9a16ee6">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <meta name="title" content="Defining Checks — CheckMate.jl">
+  <meta property="og:title" content="Defining Checks — CheckMate.jl">
+  <meta property="twitter:title" content="Defining Checks — CheckMate.jl">
+  <meta name="description" content="Documentation for CheckMate.jl.">
+  <meta property="og:description" content="Documentation for CheckMate.jl.">
+  <meta property="twitter:description" content="Documentation for CheckMate.jl.">
+  <meta property="og:url" content="https://mthelm85.github.io/CheckMate.jl/defining-checks/">
+  <meta property="twitter:url" content="https://mthelm85.github.io/CheckMate.jl/defining-checks/">
+  <link rel="canonical" href="https://mthelm85.github.io/CheckMate.jl/defining-checks/">
+  <link rel="stylesheet" href="../assets/custom.css">
+  <script>
+    (function(){
+      document.documentElement.classList.add('no-transition');
+      var t=localStorage.getItem('md-theme');if(t)document.documentElement.setAttribute('data-theme',t);
+      window.addEventListener('load',function(){setTimeout(function(){document.documentElement.classList.remove('no-transition');},50);});
+    })()
+  </script>
+</head>
+<body data-warn-outdated>
+  <header class="md-navbar">
+    <button id="md-hamburger" class="md-icon-btn md-hamburger" aria-label="Toggle navigation" aria-expanded="false"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+    <span class="md-navbar-title">CheckMate.jl</span>
+    <span class="md-navbar-spacer"></span>
+    <button id="md-search-btn" class="md-search-bar" aria-label="Search documentation" aria-expanded="false">
+      <svg class="md-icon md-search-bar-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <span class="md-search-bar-label">Search docs</span>
+      <kbd class="md-search-bar-kbd">Ctrl K</kbd>
+    </button>
+    <div id="md-version" class="md-version" hidden>
+      <button id="md-version-btn" class="md-version-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Select documentation version">
+        <span id="md-version-current" class="md-version-current"></span>
+        <svg class="md-icon md-version-caret" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+      <ul id="md-version-menu" class="md-version-menu" role="listbox" hidden></ul>
+    </div>
+    <a class="md-icon-btn md-repo-link" href="https://github.com/mthelm85/CheckMate.jl" title="View the repository on GitHub" aria-label="View the repository on GitHub" rel="noopener" target="_blank"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0012 .3z"/></svg><span class="md-repo-label">GitHub</span></a>
+    <button id="md-theme-toggle" class="md-icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="md-icon md-icon-light" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg><svg class="md-icon md-icon-dark" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg></button>
+  </header>
+  <div class="md-layout">
+    <nav class="md-sidebar">
+      <a href="../">Home</a>
+      <a href="../getting-started/">Getting Started</a>
+      <div class="md-nav-section">
+        <span class="md-nav-section-title">Manual</span>
+        <a href="../defining-checks/" class="md-nav-active">Defining Checks</a>
+        <a href="../results/">Working with Results</a>
+      </div>
+      <a href="../examples/">Examples</a>
+      <a href="../api/">API Reference</a>
+    </nav>
+    <main class="md-content">
+      <article class="md-article">
+      <div class="md-article-actions"><a class="md-icon-btn md-edit-link" href="https://github.com/mthelm85/CheckMate.jl/blob/main/docs/src/defining-checks.md" title="Edit source on GitHub" aria-label="Edit source on GitHub"><svg class="md-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 000-1.41l-2.34-2.34a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></a></div>
+<h1 id="Defining-Checks" class="md-heading">Defining Checks<a href="#Defining-Checks" class="md-heading-anchor" aria-label="Link to this section">#</a></h1>
+<p>Checks are defined inside a <a href="../api/#CheckMate.@checkset"><code class="md-code-inline">@checkset</code></a> block. A checkset has a name and contains one or more <code class="md-code-inline">@check</code> lines:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">checks = @checkset &quot;Checkset Name&quot; begin
+    @check &quot;Check name&quot; condition(:column)
+    @check &quot;Another check&quot; condition(:column_a, :column_b)
+end</code></pre>
+</div>
+<p>The general form of a check is:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">@check &quot;&lt;check name&gt;&quot; f(:col1, :col2, ...)</code></pre>
+</div>
+<ul class="md-list-tight">
+<li><p>The <strong>name</strong> must be a string literal, and must be unique within the checkset. It identifies the check in reports and in functions such as <a href="../api/#CheckMate.pass_rate"><code class="md-code-inline">pass_rate</code></a> and <a href="../api/#CheckMate.failing_rows"><code class="md-code-inline">failing_rows</code></a>.</p>
+</li>
+<li><p>The <strong>condition</strong> <code class="md-code-inline">f</code> is a named function or an anonymous function (lambda). It is called once per row with the values of the listed columns, in the order they are listed.</p>
+</li>
+<li><p>The <strong>columns</strong> are written as symbols (<code class="md-code-inline">:amount</code>). Each symbol argument names a column whose values are passed to <code class="md-code-inline">f</code>.</p>
+</li>
+</ul>
+<p><code class="md-code-inline">f</code> must return a <code class="md-code-inline">Bool</code>: <code class="md-code-inline">true</code> means the row passes, <code class="md-code-inline">false</code> means it fails.</p>
+<h2 id="Named-functions" class="md-heading">Named functions<a href="#Named-functions" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>Named functions keep checksets short and let you reuse and unit-test your rules:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">using CheckMate
+
+is_positive(x) = x &gt; 0
+is_valid_email(s) = occursin(r&quot;^[^@\s]+@[^@\s]+\.[a-z]{2,}$&quot;i, s)
+
+checks = @checkset &quot;Customer Validation&quot; begin
+    @check &quot;Positive balance&quot; is_positive(:balance)
+    @check &quot;Valid email&quot;      is_valid_email(:email)
+end</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">CheckSet: &quot;Customer Validation&quot;
+Number of checks: 2
+  ▪ <span class="sgr34">Positive balance</span> (columns: <span class="sgr36">balance</span>)
+  ▪ <span class="sgr34">Valid email</span> (columns: <span class="sgr36">email</span>)
+</code></pre>
+</div>
+<h2 id="Anonymous-functions" class="md-heading">Anonymous functions<a href="#Anonymous-functions" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>For one-off rules, write the condition inline as a lambda. Wrap the lambda in parentheses and apply it to the columns:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">checks = @checkset &quot;Inline Validation&quot; begin
+    @check &quot;Positive amount&quot; (x -&gt; x &gt; 0)(:amount)
+    @check &quot;Known currency&quot;  (c -&gt; c in (&quot;USD&quot;, &quot;EUR&quot;, &quot;GBP&quot;))(:currency)
+end</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">CheckSet: &quot;Inline Validation&quot;
+Number of checks: 2
+  ▪ <span class="sgr34">Positive amount</span> (columns: <span class="sgr36">amount</span>)
+  ▪ <span class="sgr34">Known currency</span> (columns: <span class="sgr36">currency</span>)
+</code></pre>
+</div>
+<h2 id="Multi-column-checks" class="md-heading">Multi-column checks<a href="#Multi-column-checks" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>A check can read several columns from the same row. The values are passed to the condition in the order the columns are listed, which makes it easy to express relationships between fields:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">using DataFrames
+
+orders = DataFrame(
+    order_date = [10, 12, 15, 20],
+    ship_date  = [11, 11, 15, 25],
+    quantity   = [2, 1, 3, 4],
+    unit_price = [5.0, 9.5, 2.0, 3.0],
+    total      = [10.0, 9.5, 6.0, 11.0],
+)
+
+checks = @checkset &quot;Order Consistency&quot; begin
+    @check &quot;Ships on or after order&quot; ((o, s) -&gt; s &gt;= o)(:order_date, :ship_date)
+    @check &quot;Total matches line items&quot; ((q, p, t) -&gt; q * p ≈ t)(
+        :quantity, :unit_price, :total)
+end
+
+run_checkset(orders, checks)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">
+================================================================================
+<span class="sgr34"><span class="sgr1">Check Summary: Order Consistency</span></span>
+================================================================================
+
+<span class="sgr31"><span class="sgr1">✗ </span></span>Ships on or after order: <span class="sgr31">1 rows failed</span>
+   Row 2: order_date=12, ship_date=11
+<span class="sgr31"><span class="sgr1">✗ </span></span>Total matches line items: <span class="sgr31">1 rows failed</span>
+   Row 4: quantity=4, unit_price=3.0, total=11.0
+
+Summary:
+ 0/2 checks passed (0.0%)
+Checks completed in 152.8 ms
+</code></pre>
+</div>
+<h2 id="Other-callable-conditions" class="md-heading">Other callable conditions<a href="#Other-callable-conditions" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>The condition can be any expression that evaluates to a function, not only a name or a lambda. Wrap it in parentheses when it is more than a plain name:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">@check &quot;Not missing&quot;  (!ismissing)(:amount)   # negated function
+@check &quot;Non-empty&quot;    (!Base.isempty)(:name)  # qualified name
+@check &quot;Is USD&quot;       (==(&quot;USD&quot;))(:currency)  # curried comparison</code></pre>
+</div>
+<h2 id="Operators-and-negation" class="md-heading">Operators and negation<a href="#Operators-and-negation" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>The condition must be a function that is <em>applied</em> to the columns. Operators written in front of the call are not supported:</p>
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">@check &quot;Not missing&quot; !ismissing(:amount)            # ✗ error: no column arguments
+@check &quot;Not missing&quot; (!ismissing)(:amount)          # ✓ negated function
+@check &quot;Not missing&quot; (x -&gt; !ismissing(x))(:amount)  # ✓ lambda</code></pre>
+</div>
+<p><code class="md-code-inline">!ismissing(:amount)</code> parses as <code class="md-code-inline">!</code> applied to <code class="md-code-inline">ismissing(:amount)</code>, so the check has no column arguments of its own. <code class="md-code-inline">@checkset</code> reports this when the checkset is defined.</p>
+<p>Operators work normally <em>inside</em> a named function or a lambda.</p>
+<h2 id="Missing-values-and-exceptions" class="md-heading">Missing values and exceptions<a href="#Missing-values-and-exceptions" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>If a condition throws an error for a row, that row is recorded as a failure and the run continues. The report says how many failures came from exceptions.</p>
+<p>This matters most for <code class="md-code-inline">missing</code> values. <code class="md-code-inline">missing &gt; 0</code> returns <code class="md-code-inline">missing</code>, not a <code class="md-code-inline">Bool</code>, so a condition like <code class="md-code-inline">x -&gt; x &gt; 0</code> throws on a missing value:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">data = (amount = [10, missing, -3],)
+
+checks = @checkset &quot;Missing Handling&quot; begin
+    @check &quot;Positive (strict)&quot;  (x -&gt; x &gt; 0)(:amount)
+    @check &quot;Positive or absent&quot; (x -&gt; ismissing(x) || x &gt; 0)(:amount)
+end
+
+run_checkset(data, checks)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">
+================================================================================
+<span class="sgr34"><span class="sgr1">Check Summary: Missing Handling</span></span>
+================================================================================
+
+<span class="sgr31"><span class="sgr1">✗ </span></span>Positive (strict): <span class="sgr31">2 rows failed (1 due to exceptions in condition function)</span>
+<span class="sgr90">   First exception (row 2): TypeError: non-boolean (Missing) used in boolean context</span>
+   Row 2: amount=missing
+   Row 3: amount=-3
+<span class="sgr31"><span class="sgr1">✗ </span></span>Positive or absent: <span class="sgr31">1 rows failed</span>
+   Row 3: amount=-3
+
+Summary:
+ 0/2 checks passed (0.0%)
+Checks completed in 85.2 ms
+</code></pre>
+</div>
+<div class="md-admonition md-admonition-tip">
+<p class="md-admonition-title">Make missing-value policy explicit</p>
+<div class="md-admonition-body">
+<p>Decide whether <code class="md-code-inline">missing</code> is allowed for each column and say so in the condition, for example <code class="md-code-inline">ismissing(x) || x &gt; 0</code>. Use a separate <code class="md-code-inline">(!ismissing)(:col)</code> check when missing values should be reported on their own.</p>
+</div>
+</div>
+<p>When a condition throws, the report shows the first exception and the row it happened on, so a bug in a condition, such as a typo in a variable name, is easy to spot. The same information is stored in the <code class="md-code-inline">exception_count</code> and <code class="md-code-inline">first_exception</code> fields of the <a href="../api/#CheckMate.CheckResult"><code class="md-code-inline">CheckResult</code></a>.</p>
+<h2 id="Warning-level-checks" class="md-heading">Warning-level checks<a href="#Warning-level-checks" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>Not every rule should fail validation. Append <code class="md-code-inline">severity=:warning</code> to a check to report its failures without counting them as failures:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">data = (amount = [100, 250, -5, 1_000_000],)
+
+checks = @checkset &quot;Payments&quot; begin
+    @check &quot;Positive&quot;         (x -&gt; x &gt; 0)(:amount)
+    @check &quot;Unusually large&quot;  (x -&gt; x &lt; 100_000)(:amount) severity=:warning
+end
+
+summary = run_checkset(data, checks)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">
+================================================================================
+<span class="sgr34"><span class="sgr1">Check Summary: Payments</span></span>
+================================================================================
+
+<span class="sgr31"><span class="sgr1">✗ </span></span>Positive: <span class="sgr31">1 rows failed</span>
+   Row 3: amount=-5
+<span class="sgr33"><span class="sgr1">⚠ </span></span>Unusually large: <span class="sgr33">1 rows failed</span>
+   Row 4: amount=1000000
+
+Summary:
+ 0/2 checks passed (0.0%), 1 with warnings
+Checks completed in 25.3 ms
+</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">all_passed(summary), failed_checks(summary), warning_checks(summary)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">(false, [&quot;Positive&quot;], [&quot;Unusually large&quot;])</code></pre>
+</div>
+<p>Warnings are marked with ⚠ in the report. They are ignored by <a href="../api/#CheckMate.failed_checks"><code class="md-code-inline">failed_checks</code></a>, <a href="../api/#CheckMate.all_passed"><code class="md-code-inline">all_passed</code></a>, <a href="../api/#CheckMate.assert_valid"><code class="md-code-inline">assert_valid</code></a> and the summary-wide row and pass-rate functions; see <a href="../results/#Warnings">Warnings</a> for details. The severity can also come from a variable, for example <code class="md-code-inline">severity=level</code>, and must be <code class="md-code-inline">:error</code> (the default) or <code class="md-code-inline">:warning</code>.</p>
+<h2 id="Missing-columns" class="md-heading">Missing columns<a href="#Missing-columns" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p>If a column named in a check does not exist in the data, the check fails with the message <code class="md-code-inline">Required columns not found</code>. No rows are evaluated for that check. The other checks in the checkset still run.</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">run_checkset((amount = [1, 2, 3],), @checkset &quot;Schema&quot; begin
+    @check &quot;Has a currency&quot; (c -&gt; true)(:currency)
+end)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">
+================================================================================
+<span class="sgr34"><span class="sgr1">Check Summary: Schema</span></span>
+================================================================================
+
+<span class="sgr31"><span class="sgr1">✗ </span></span>Has a currency: <span class="sgr31">Required columns not found: [:currency]</span>
+
+Summary:
+ 0/1 checks passed (0.0%)
+Checks completed in 0.0 ms
+</code></pre>
+</div>
+<h2 id="Inspecting-a-checkset" class="md-heading">Inspecting a checkset<a href="#Inspecting-a-checkset" class="md-heading-anchor" aria-label="Link to this section">#</a></h2>
+<p><a href="../api/#CheckMate.check_names"><code class="md-code-inline">check_names</code></a> and <a href="../api/#CheckMate.check_columns"><code class="md-code-inline">check_columns</code></a> let you inspect a checkset programmatically:</p>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">checks = @checkset &quot;Order Consistency&quot; begin
+    @check &quot;Ships on or after order&quot; ((o, s) -&gt; s &gt;= o)(:order_date, :ship_date)
+    @check &quot;Positive quantity&quot; (q -&gt; q &gt; 0)(:quantity)
+end
+
+check_names(checks)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">2-element Vector{String}:
+ &quot;Ships on or after order&quot;
+ &quot;Positive quantity&quot;</code></pre>
+</div>
+<div class="md-multi-output">
+<div class="md-code-block">
+<button class="md-copy-btn" title="Copy to clipboard" aria-label="Copy code"><span class="md-copy-icon">⧉</span><span class="md-copy-feedback">Copied!</span></button>
+<pre><code class="language-julia">check_columns(checks, &quot;Ships on or after order&quot;)</code></pre>
+</div>
+<pre class="md-output md-output-text"><code class="nohighlight ansi">2-element Vector{Symbol}:
+ :order_date
+ :ship_date</code></pre>
+</div>
+      </article>
+      <footer class="md-footer">
+<p>Built with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and <a href="https://github.com/mthelm85/MaterialDocs.jl">MaterialDocs.jl</a>.</p>
+      </footer>
+    </main>
+    <aside class="md-toc">
+      <div class="md-toc-inner">
+        <p class="md-toc-title">On this page</p>
+          <a class="md-toc-link md-toc-h2" href="#Named-functions">Named functions</a>
+          <a class="md-toc-link md-toc-h2" href="#Anonymous-functions">Anonymous functions</a>
+          <a class="md-toc-link md-toc-h2" href="#Multi-column-checks">Multi-column checks</a>
+          <a class="md-toc-link md-toc-h2" href="#Other-callable-conditions">Other callable conditions</a>
+          <a class="md-toc-link md-toc-h2" href="#Operators-and-negation">Operators and negation</a>
+          <a class="md-toc-link md-toc-h2" href="#Missing-values-and-exceptions">Missing values and exceptions</a>
+          <a class="md-toc-link md-toc-h2" href="#Warning-level-checks">Warning-level checks</a>
+          <a class="md-toc-link md-toc-h2" href="#Missing-columns">Missing columns</a>
+          <a class="md-toc-link md-toc-h2" href="#Inspecting-a-checkset">Inspecting a checkset</a>
+      </div>
+    </aside>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia-repl.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../siteinfo.js"></script>
+  <script src="../../versions.js"></script>
+  <script src="../assets/materialdocs.js?v=f9a16ee6"></script>
+</body>
+</html>
