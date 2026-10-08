@@ -13,7 +13,7 @@ makedocs(;
         dark_mode=:toggle,
         canonical="https://mthelm85.github.io/CheckMate.jl",
         edit_link="main",
-        assets=["assets/custom.css"],
+        assets=String[],
     ),
     pages=[
         "Home" => "index.md",
