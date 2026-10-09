@@ -13,7 +13,7 @@ makedocs(;
         dark_mode=:toggle,
         canonical="https://mthelm85.github.io/CheckMate.jl",
         edit_link="main",
-        assets=["assets/custom.css"],
+        assets=String[],
     ),
     pages=[
         "Home" => "index.md",
@@ -26,6 +26,13 @@ makedocs(;
         "API Reference" => "api.md",
     ],
 )
+
+# Work around MaterialDocs <= 0.2.1 copying ANSI color codes from @example output
+# into the search index, which makes it invalid JSON and breaks search.
+# Remove once MaterialDocs 0.2.2 is released.
+let index = joinpath(@__DIR__, "build", "assets", "search-index.json")
+    isfile(index) && write(index, replace(read(index, String), r"\e\[[0-9;:?]*[ -/]*[@-~]" => ""))
+end
 
 deploydocs(;
     repo="github.com/mthelm85/CheckMate.jl",
