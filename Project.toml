@@ -1,6 +1,6 @@
 name = "CheckMate"
 uuid = "94fda9bc-e29e-424a-aa2b-1addfed2164c"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Matt Helm mthelm85@gmail.com"]
 
 [deps]
