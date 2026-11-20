@@ -274,7 +274,10 @@
     xhr.open('GET', basePath + 'assets/search-index.json', true);
     xhr.onload = function() {
       if (xhr.status === 200) {
-        try { index = JSON.parse(xhr.responseText); } catch (e) { index = []; }
+        try { index = JSON.parse(xhr.responseText); } catch (e) {
+          console.error('MaterialDocs: could not parse the search index; search is disabled.', e);
+          index = [];
+        }
       } else { index = []; }
       if (input && input.value) search(input.value);
     };
